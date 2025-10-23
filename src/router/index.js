@@ -1,6 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '@/views/LoginView.vue';
 import SignupView from '@/views/SignupView.vue';
+import ScheduleView from '@/views/ScheduleView.vue';
+import DashboardView from '@/views/DashboardView.vue';
+import ExamsView from '@/views/ExamsView.vue';
+import NotesView from '@/views/NotesView.vue';
+import AssignmentsView from '@/views/AssignmentsView.vue';
 import { auth } from '@/firebase';
 
 const routes = [
@@ -21,6 +26,36 @@ const routes = [
     meta: { requiresUnauth: true }
   },
   {
+    path: '/schedule',
+    name: 'Schedule',
+    component: ScheduleView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: DashboardView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/exams',
+    name: 'Exams',
+    component: ExamsView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/notes',
+    name: 'Notes',
+    component: NotesView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/assignments',
+    name: 'Assignments',
+    component: AssignmentsView,
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/:catchAll(.*)',
     redirect: '/home'
   }
@@ -37,9 +72,9 @@ router.beforeEach((to, from, next) => {
   // Firebase may not have user instantly, wait for auth init
   const checkAuth = () => {
     if (to.meta.requiresAuth && !auth.currentUser) {
-      next('/home');
+      next('/');
     } else if (to.meta.requiresUnauth && auth.currentUser) {
-      next('/projects');
+      next('/schedule');
     } else {
       next();
     }

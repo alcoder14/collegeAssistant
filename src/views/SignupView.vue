@@ -1,24 +1,52 @@
 <template>
-  <main class="form-container">
-    <form @submit.prevent="handleSignup" class="form">
-      <h1 class="form-title">Sign Up</h1>
-      <input v-model="email" placeholder="Email" />
-      <input v-model="password" type="password" placeholder="Password" />
-      <ErrorMessage :errorMsg="errorMsg" v-if="errorMsg" />
-      <div class="alternative-action">
-          <p class="text">Already a member? </p>
-          <router-link to="/login"><button>Log In</button></router-link>
+  <main class="form-page">
+
+    <section class="form-page-block">
+        <div class="slogan-container">
+          <h1>COLLEGE <br> ASSISTANT</h1>
+          <h3>All your subjects, schedules, and success in one place. </h3>
+           <div class="check-option">
+              <font-awesome-icon icon="fa fa-check" class="check-light" />
+              <p>Manage Schedules & Subjects</p>
+            </div>
+            <div class="check-option">
+              <font-awesome-icon icon="fa fa-check" class="check-light" />
+              <p>Create & Mark Notes</p>
+            </div>
+            <div class="check-option">
+              <font-awesome-icon icon="fa fa-check" class="check-light" />
+              <p>Keep Track of Assignments & Exams</p>
+            </div>
+            <div class="check-option">
+              <font-awesome-icon icon="fa fa-check" class="check-light" />
+              <p>Organize & Simplify Your Study Process</p>
+            </div>
         </div>
-      <button type="submit" class="light-purple-btn">Sign Up</button>
-    </form>
+    </section>
+
+    <section class="form-page-block">
+       <form @submit.prevent="handleSignup" class="form-container">
+          <font-awesome-icon icon="fa fa-user-circle" class="user-circle" />
+          <h1 class="form-title">Sign Up</h1>
+          <input v-model="email" placeholder="Email" class="auth-input" />
+          <input v-model="password" type="password" placeholder="Password" class="auth-input" style="margin-bottom: 1.5rem;" />
+
+          <ErrorMessage :errorMsg="errorMsg" v-if="errorMsg" />
+          <div class="alt-action-container">
+              <p class="text">Already a member? </p>
+              <router-link to="/login"><button class="alt-action-btn">Log In</button></router-link>
+            </div>
+          <button type="submit" class="confirm-btn light-btn">Confirm</button>
+        </form>
+    </section>
+
   </main>
   </template>
   
   <script setup>
 import { ref } from 'vue';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '@/firebase'; // Make sure db is exported from your firebase.js
+import { auth } from '@/firebase'; 
 import { useRouter } from 'vue-router';
 import ErrorMessage from '@/components/ErrorMessage.vue';
 
@@ -28,20 +56,14 @@ const errorMsg = ref('');
 const router = useRouter();
 
 const handleSignup = async () => {
-  errorMsg.value = ''; // Clear previous error
+  errorMsg.value = '';
   try {
-    // 1. Create auth user
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;
     
-    // 2. Save user data to Firestore
-    await setDoc(doc(db, 'users', user.uid), {
-      email: user.email,
-      uid: user.uid,
-    });
+    console.log(user)
     
-    // 3. Redirect after successful save
-    router.push('/projects');
+    router.push('/schedule');
   } catch (err) {
     handleSignupError(err);
   }

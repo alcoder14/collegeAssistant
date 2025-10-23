@@ -1,16 +1,44 @@
 <template>
-    <main class="form-container">
-      <form @submit.prevent="handleLogin" class="form">
-        <h1 class="form-title">Log In</h1>
-        <input v-model="email" placeholder="Email" />
-        <input v-model="password" type="password" placeholder="Password" />
-        <ErrorMessage :errorMsg="errorMsg" v-if="errorMsg" />
-        <div class="alternative-action">
-          <p class="text">Not a member? </p>
-          <router-link to="/signup"><button>Sign Up</button></router-link>
-        </div>
-        <button type="submit" class="light-purple-btn">Confirm</button>
-      </form>
+    <main class="form-page">
+
+      <section class="form-page-block">
+          <div class="slogan-container">
+            <h1>COLLEGE <br> ASSISTANT</h1>
+            <h3> All your subjects, schedules, and success in one place. </h3>
+            <div class="check-option">
+              <font-awesome-icon icon="fa fa-check" class="check-light" />
+              <p>Manage Schedules & Subjects</p>
+            </div>
+            <div class="check-option">
+              <font-awesome-icon icon="fa fa-check" class="check-light" />
+              <p>Create & Mark Notes</p>
+            </div>
+            <div class="check-option">
+              <font-awesome-icon icon="fa fa-check" class="check-light" />
+              <p>Keep Track of Assignments & Exams</p>
+            </div>
+            <div class="check-option">
+              <font-awesome-icon icon="fa fa-check" class="check-light" />
+              <p>Organize & Simplify Your Study Process</p>
+            </div>
+          </div>
+       </section>
+
+      <section class="form-page-block">
+        <form @submit.prevent="handleLogin" class="form-container">
+          <font-awesome-icon icon="fa fa-user-circle" class="user-circle" />
+          <h1 class="form-title">Log In</h1>
+          <input v-model="email" placeholder="Email" class="auth-input"/>
+          <input v-model="password" type="password" placeholder="Password" class="auth-input" style="margin-bottom: 1.5rem;" />
+          <ErrorMessage :errorMsg="errorMsg" v-if="errorMsg" />
+          <div class="alt-action-container">
+            <p class="text">Not a member? </p>
+            <router-link to="/signup"><button class="alt-action-btn">Sign Up</button></router-link>
+          </div>
+          <button type="submit" class="confirm-btn light-btn">Confirm</button>
+        </form>
+      </section>
+
     </main>
   </template>
   
@@ -27,20 +55,13 @@ const errorMsg = ref('');
 const router = useRouter();
 
 const handleLogin = async () => {
-  errorMsg.value = ''; // Clear previous error
+  errorMsg.value = ''; 
   try {
     await signInWithEmailAndPassword(auth, email.value, password.value);
-    router.push('/projects');
+    router.push('/schedule');
   } catch (err) {
-    if (err.code === 'auth/user-not-found') {
-      errorMsg.value = 'No user found with this email.';
-    } else if (err.code === 'auth/wrong-password') {
-      errorMsg.value = 'Incorrect password.';
-    } else if (err.code === 'auth/invalid-email') {
-      errorMsg.value = 'Invalid email address.';
-    } else {
-      errorMsg.value = 'Failed to log in. Please try again.';
-    }
+    console.log(err.code)
+    errorMsg.value = 'Invalid Email or Password';
   }
 };
 </script>
