@@ -6,6 +6,8 @@ import DashboardView from '@/views/DashboardView.vue';
 import ExamsView from '@/views/ExamsView.vue';
 import NotesView from '@/views/NotesView.vue';
 import AssignmentsView from '@/views/AssignmentsView.vue';
+import ResetPassword from '@/views/ResetPassword.vue';
+import NewPassword from '@/views/NewPassword.vue';
 import { auth } from '@/firebase';
 
 const routes = [
@@ -24,6 +26,19 @@ const routes = [
     name: 'Signup',
     component: SignupView,
     meta: { requiresUnauth: true }
+  },
+  {
+    path: '/reset-password',
+    name: 'Reset Password',
+    component: ResetPassword,
+    meta: { requiresUnauth: true }
+  },
+  {
+    path: '/set-new-password',
+    name: 'Set New Password',
+    component: NewPassword,
+    meta: { requiresUnauth: true },
+    redirect: '/login'
   },
   {
     path: '/schedule',
