@@ -77,10 +77,15 @@ button{
     justify-content: center;
     align-items: center;
     .modal-window{
-        min-width: 800px;
+        width: 500px;
         background-color: $dark;
         padding: 30px;
         @include flex-column();
+        input{
+            margin-bottom: 1rem;
+            padding: 0.4rem 0.8rem;
+            font-size: 1rem;
+        }
     }
 }
 @media(max-width: 800px){
@@ -95,17 +100,10 @@ button{
         min-height: 100vh;
     }
 }
-
-.modal-upper-row{
-    width: 100%;
-    @include flex-row();
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
 .modal-title{
-    font-size: 20px;
+    font-size: 1.5rem;
     color: $white;
+    margin-bottom: 1rem;
 }
   
 
@@ -300,3 +298,19 @@ button{
     margin-bottom: 10px;
   }
 
+
+
+  // View Container - used on each page that can be accessed through navbar
+
+.flex-container{
+    display: flex;
+    flex-direction: row;
+}
+.view-blank{
+    background-color: $dark;
+    width: 85%;
+    min-height: 90vh;
+}
+.view-container{
+    padding: 2rem;
+}

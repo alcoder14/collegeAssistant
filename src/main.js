@@ -15,7 +15,14 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { faBook } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faPlus, faTimes, faPen, faCheck, faTableCellsLarge, faTrash, faRightFromBracket, faUserCircle, faBook)
+import { faGrip } from '@fortawesome/free-solid-svg-icons'
+import { faTable } from '@fortawesome/free-solid-svg-icons'
+import { faClipboardList } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarDays } from '@fortawesome/free-solid-svg-icons'
+import { faNoteSticky } from '@fortawesome/free-solid-svg-icons'
+
+
+library.add(faPlus, faTimes, faPen, faCheck, faTableCellsLarge, faTrash, faRightFromBracket, faUserCircle, faBook, faGrip, faTable, faClipboardList, faCalendarDays, faNoteSticky)
 
 import { createPinia } from 'pinia'
 const pinia = createPinia()

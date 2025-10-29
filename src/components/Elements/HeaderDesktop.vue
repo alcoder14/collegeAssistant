@@ -28,10 +28,13 @@ const handleLogout = async () => {
       header{
         width: 100%;
         height: 10vh;
-        padding: 2vh;
         background-color: $darkest;
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        border-bottom: 2px solid #565656;
       }
       h1{
         color: $white;
@@ -41,6 +44,6 @@ const handleLogout = async () => {
       .logout-btn{
         background-color: $dark;
         color: $light;
-        font-size: 1.5rem;
+        font-size: 2rem;
       }
   </style>
