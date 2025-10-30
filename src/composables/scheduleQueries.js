@@ -1,5 +1,5 @@
 import { db, auth } from '@/firebase';
-import { setDoc, doc, addDoc, collection, serverTimestamp, query, where, getDocs, deleteDoc } from 'firebase/firestore';
+import { setDoc, doc, addDoc, collection, serverTimestamp, query, where, getDocs, deleteDoc, updateDoc } from 'firebase/firestore';
 
 export const createSchedule = async (uid) => {
     await setDoc(doc(db, 'schedules', uid), {
@@ -155,6 +155,76 @@ export const deleteSubjectAndTheirPositions = async (subjectId) => {
     console.log(`Deleted ${snapshot.size} subject position(s) for subject ${subjectId}`);
   } catch (error) {
     console.error('Error deleting subject and related positions:', error);
+    throw error;
+  }
+};
+
+export const getUserSchedule = async () => {
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+
+    const schedulesRef = collection(db, "schedules");
+    const q = query(schedulesRef, where("uid", "==", user.uid));
+
+    const querySnapshot = await getDocs(q);
+
+    const schedule = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    console.log(schedule)
+
+    return schedule;
+  } catch (error) {
+    console.error("Error fetching user schedules:", error);
+    throw error;
+  }
+};
+
+export const updateScheduleStartHour = async (newStartHour) => {
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+
+    const schedulesRef = collection(db, "schedules");
+    const q = query(schedulesRef, where("uid", "==", user.uid));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      throw new Error("No schedule found for this user.");
+    }
+
+    const scheduleDoc = querySnapshot.docs[0].ref; // Assume one schedule per user
+    await updateDoc(scheduleDoc, { startHour: newStartHour });
+
+    console.log("✅ startHour updated successfully");
+  } catch (error) {
+    console.error("Error updating startHour:", error);
+    throw error;
+  }
+};
+
+export const updateScheduleName = async (name) => {
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+
+    const schedulesRef = collection(db, "schedules");
+    const q = query(schedulesRef, where("uid", "==", user.uid));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      throw new Error("No schedule found for this user.");
+    }
+
+    const scheduleDoc = querySnapshot.docs[0].ref; // Assume one schedule per user
+    await updateDoc(scheduleDoc, { scheduleName: name });
+
+    console.log("✅ startHour updated successfully");
+  } catch (error) {
+    console.error("Error updating startHour:", error);
     throw error;
   }
 };

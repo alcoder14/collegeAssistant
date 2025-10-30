@@ -8,23 +8,35 @@
                 <div class="schedule-container">
                     <div class="management-row">
                         <div class="left-side">
-                            <h2 class="container-title">Title</h2>
+                            <h2 class="container-title" v-if="!editingScheduleName" style="margin-right: 0.5rem;">{{ scheduleName }}</h2>
+                            <button @click="toggleEditScheduleName" v-if="!editingScheduleName" class="transparent-btn"><font-awesome-icon icon="fa fa-pen" /></button>
+
+                            <input type="text" v-model="scheduleName" v-if="editingScheduleName">
+
+                            <button v-if="editingScheduleName"><font-awesome-icon icon="fa fa-check" @click="changeScheduleName"/></button>
+
+                            <button v-if="editingScheduleName" @click="keepScheduleName"><font-awesome-icon icon="fa fa-times"/></button>
                         </div>
                         <div class="right-side">
-
+                          <label>Starting time: </label>
+                          <DropdownComponent :selectedOption="selectedStartHourOption" :options="startHourOptions" @onSelected="handleStartHourChange" v-if="schedule.length !== 0" />
                         </div>
                     </div>
                     <div class="schedule">
                         <div class="days-row">
-                            <div class="day">MON</div>
-                            <div class="day">TUE</div>
-                            <div class="day">WED</div>
-                            <div class="day">THU</div>
-                            <div class="day">FRI</div>
-                            <div class="day">SAT</div>
-                            <div class="day">SUN</div>
+                            <div class="time-cell">TIME | DAY</div>
+                            <div class="day-cell">MON</div>
+                            <div class="day-cell">TUE</div>
+                            <div class="day-cell">WED</div>
+                            <div class="day-cell">THU</div>
+                            <div class="day-cell">FRI</div>
+                            <div class="day-cell">SAT</div>
+                            <div class="day-cell">SUN</div>
                         </div>
                         <div v-for="y in 14" :key="y" class="timetable-row">
+                            <div class="time-cell">
+                              {{ startingTimes[y-1] }}
+                            </div>
                             <div
                                 v-for="x in 7"
                                 :key="x"
@@ -71,12 +83,13 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getUserSubjects, getUserSubjectPositions, saveSubjectPosition, deleteSubjectPosition, deleteSubjectAndTheirPositions } from '@/composables/scheduleQueries';
+import { getUserSubjects, getUserSubjectPositions, saveSubjectPosition, deleteSubjectPosition, deleteSubjectAndTheirPositions, getUserSchedule, updateScheduleStartHour, updateScheduleName } from '@/composables/scheduleQueries';
 
 import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
 import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
 import AddSubjectModal from '@/components/Modals/AddSubjectModal.vue';
 import SelectSubjectModal from '@/components/Modals/SelectSubjectModal.vue';
+import DropdownComponent from '@/components/Elements/DropdownComponent.vue';
 
 
 const addSubjectModalVisible = ref(false);
@@ -95,7 +108,76 @@ const toggleDeleteSubjectModal = () => {
 onMounted(async () => {
   await Promise.all([loadSubjects(), loadSubjectPositions()]);
   compileFilledCells();
+  await loadSchedule()
 });
+
+const schedule = ref([]);
+const scheduleData = ref()
+const selectedStartHourOption = ref()
+const scheduleName = ref([])
+const scheduleNameCopy = ref([])
+const startHourOptions = ref([{value: "07:00", visibleValue: "07:00"}, {value: "08:00", visibleValue: "08:00"}])
+const loadSchedule = async () => {
+  schedule.value = await getUserSchedule();
+  scheduleData.value = schedule.value[0]
+  selectedStartHourOption.value = scheduleData.value.startHour
+  scheduleName.value = scheduleData.value.scheduleName
+  scheduleNameCopy.value = scheduleName.value
+  calculateStartingTimes(selectedStartHourOption.value)
+}
+
+const editingScheduleName = ref(false)
+const toggleEditScheduleName = () => {
+  editingScheduleName.value = !editingScheduleName.value
+}
+
+const changeScheduleName = async () => {
+  scheduleNameCopy.value = scheduleName.value
+  toggleEditScheduleName()
+  console.log(scheduleName.value)
+  await updateScheduleName(scheduleName.value)
+}
+const keepScheduleName = () => {
+  scheduleName.value = scheduleNameCopy.value
+  toggleEditScheduleName()
+}
+
+const startingTimes = ref([])
+
+const calculateStartingTimes = (startHour) => {
+  
+  startingTimes.value = []
+  startingTimes.value.push(startHour)
+
+  let startHourInt = parseInt(startHour[1])
+
+  let lastHour;
+  if(startHour === "07:00"){
+    lastHour = 20;
+  } else {
+    lastHour = 21;
+  }
+
+  for(let i = startHourInt; i < lastHour; i++){
+    startHourInt++;
+    let startHourString;
+    if(startHourInt < 10){
+      startHourString = "0" + startHourInt.toString() + ":00"
+    } else {
+      startHourString = startHourInt.toString() + ":00"
+    }
+    startingTimes.value.push(startHourString)
+  } 
+
+  console.log(startingTimes.value)
+}
+
+const handleStartHourChange = async (newStartHour) => {
+
+  calculateStartingTimes(newStartHour)
+  await updateScheduleStartHour(newStartHour)
+
+}
 
 /* --- Data loading --- */
 const subjects = ref([]);
@@ -236,85 +318,100 @@ const deleteSubject = async (id) => {
 
 
 <style lang="scss" scoped>
-      @import "@/assets/style.scss";
-      .schedule-container{
-        width: 100%;
-        background-color: $darkest;
-        min-height: 55vh;
-        margin-bottom: 2rem;
-        user-select: none;
+@import "@/assets/style.scss";
+.schedule-container{
+  width: 100%;
+  background-color: $darkest;
+  min-height: 55vh;
+  margin-bottom: 2rem;
+  user-select: none;
+}
+.subjects-container{
+  width: 100%;
+  background-color: $darkest;
+  min-height: 25vh;
+  user-select: none;
+  .subjects{
+      padding-left: 1rem;
+      display: grid;
+      grid-template-columns: repeat(8, auto);
+      gap: 20px;
+      .subject{
+          display: flex;
+          flex-direction: row;
+          .text{
+              width: 70%;
+              display: flex;
+              flex-direction: column;
+              padding: 0.3rem;
+          }
+          .deleteSubjectBtn{
+              width: 30%;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              cursor: pointer;
+              background-color: $dark;
+              opacity: 0.5;
+              .trash-icon{
+                  opacity: 1;
+              }
+          }
+          h3{
+              font-size: 1.2rem;
+          }
+          h4{
+              font-size: 0.8rem;
+          }
+          h5 {
+              font-size: 0.7rem;
+          }
       }
-      .subjects-container{
-        width: 100%;
-        background-color: $darkest;
-        min-height: 25vh;
-        user-select: none;
-        .subjects{
-            padding-left: 1rem;
-            display: grid;
-            grid-template-columns: repeat(8, auto);
-            gap: 20px;
-            .subject{
-                display: flex;
-                flex-direction: row;
-                .text{
-                    width: 70%;
-                    display: flex;
-                    flex-direction: column;
-                    padding: 0.3rem;
-                }
-                .deleteSubjectBtn{
-                    width: 30%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    cursor: pointer;
-                    background-color: $dark;
-                    opacity: 0.5;
-                    .trash-icon{
-                        opacity: 1;
-                    }
-                }
-                h3{
-                    font-size: 1.2rem;
-                }
-                h4{
-                    font-size: 0.8rem;
-                }
-                h5 {
-                    font-size: 0.7rem;
-                }
-            }
-        }
+  }
+}
+.management-row{
+  padding: 1rem;
+  color: $white;
+  display: flex;
+  justify-content: space-between;
+  .left-side, .right-side{
+      display: flex;
+      flex-direction: row;
+  }
+  .right-side{
+      align-items: center;
+      label{
+        margin-right: 10px;
       }
-      .management-row{
-        padding: 1rem;
-        color: $white;
-        display: flex;
-        justify-content: space-between;
-        .left-side, .right-side{
-            display: flex;
-            flex-direction: row;
-        }
-    }
-    .container-title{
-        margin-right: 1rem;
-    }
-    .timetable {
+  }
+}
+.container-title{
+  margin-right: 1rem;
+}
+
+
+.timetable {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
 .days-row{
-    display: flex;
+  display: flex;
 }
-.day{
-    width: 12.5%;
-    padding: 0.5rem;
-    text-align: center;
-    background-color: $light;
-    border: 1px solid $dark;
+.day-cell{
+  width: 12.5%;
+  padding: 0.5rem;
+  text-align: center;
+  background-color: $light;
+}
+.time-cell{
+  width: 12.5%;
+  border: 1px solid $dark;
+  text-align: center;
+  padding: 0.5rem;
+  color: $white;
+
 }
 .timetable-row {
   display: flex;

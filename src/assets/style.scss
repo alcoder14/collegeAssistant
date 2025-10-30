@@ -30,6 +30,12 @@ button{
     font-size: 20px;
     transition: all 0.3s;
 }
+.transparent-btn{
+    background-color: transparent;
+    color: $light;
+    font-size: 1rem;
+    padding: 0;
+}
 @media(max-height: 1000px){
     button{
         font-size: 16px;
@@ -314,3 +320,4 @@ button{
 .view-container{
     padding: 2rem;
 }
+

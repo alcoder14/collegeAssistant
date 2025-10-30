@@ -24,7 +24,6 @@
     try {
       emit("onSelected", event.target.value);
       console.log(event.target.value)
-      console.log("emitted succesfully")
     } catch (error) {
       console.error("Emit failed:", error);
     }
@@ -40,8 +39,7 @@
       padding: 6px 10px;
       background-color: $dark;
       color: $white;
-      border-radius: 20px;
-      border: solid 2px $grey;
+      border: solid 2px $darkest;
       &:after {
           content: '\25BC'; /* Unicode character for a downward-pointing triangle */
           position: absolute;
