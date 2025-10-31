@@ -1,26 +1,54 @@
 <template>
     <header>
         <h1>COLLEGE ASSISTANT</h1>
-        <button class="logout-btn" @click="handleLogout"><font-awesome-icon icon="fa fa-right-from-bracket" /></button>
+        <div class="weather-container" v-if="weather != null">
+          <h3 class="weather-data">Temperature: {{ weather.current_weather.temperature }} °C</h3>
+        </div>
     </header>
 </template>
 
 <script setup>
-import { signOut } from 'firebase/auth';
-import { auth } from '@/firebase';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue'
+const lat = ref(null)
+const lon = ref(null)
+const weather = ref(null)
+const error = ref(null)
 
-const router = useRouter()
+const fetchWeather = async (lat_, lon_) => {
 
-const handleLogout = async () => {
-    try {
-        await signOut(auth);
-        router.push('/login');
-    } catch (error) {
-        console.error('Logout error:', error.message);
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat_}&longitude=${lon_}&current_weather=true`
+  try {
+    const resp = await fetch(url)
+    const data = await resp.json()
+    weather.value = data
+    console.log(weather.value)
+  } catch (err) {
+    console.error("Error fetching weather:", err)
+    error.value = "Failed to fetch weather"
+  }
+}
+
+const getLocationAndWeather = () => {
+  if (!navigator.geolocation) {
+    error.value = "Geolocation not supported"
+    return
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      lat.value = pos.coords.latitude
+      lon.value = pos.coords.longitude
+      fetchWeather(lat.value, lon.value)
+    },
+    err => {
+      console.error("Geolocation error:", err)
+      error.value = `Geolocation error: ${err.message}`
     }
-};
+  )
+}
 
+onMounted(() => {
+  getLocationAndWeather()
+})
 </script>
 
   <style lang="scss" scoped>
@@ -41,9 +69,9 @@ const handleLogout = async () => {
         font-weight: bold;
         font-size: 2rem;
       }
-      .logout-btn{
-        background-color: $dark;
-        color: $light;
-        font-size: 2rem;
+      .weather-data{
+        color: $white;
+        font-weight: lighter;
+        font-size: 1.1rem;
       }
   </style>
