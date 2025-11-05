@@ -72,7 +72,7 @@ const routes = [
   },
   {
     path: '/:catchAll(.*)',
-    redirect: '/home'
+    redirect: '/login'
   }
 ];
 

@@ -10,8 +10,7 @@
           <ErrorMessage :errorMsg="errorMsg" v-if="errorMsg" />
           <div class="alt-action-container">
               <p class="text">Already a member? </p>
-              <router-link to="/login
-              "><button class="alt-action-btn">Log In</button></router-link>
+              <router-link to="/login"><button class="alt-action-btn">Log In</button></router-link>
             </div>
           <button type="submit" class="confirm-btn light-btn">Confirm</button>
         </form>
