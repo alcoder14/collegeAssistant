@@ -369,25 +369,7 @@ const deleteSubject = async (id) => {
       }
   }
 }
-.management-row{
-  padding: 1rem;
-  color: $white;
-  display: flex;
-  justify-content: space-between;
-  .left-side, .right-side{
-      display: flex;
-      flex-direction: row;
-  }
-  .right-side{
-      align-items: center;
-      label{
-        margin-right: 10px;
-      }
-  }
-}
-.container-title{
-  margin-right: 1rem;
-}
+
 
 
 .timetable {

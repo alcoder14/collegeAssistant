@@ -1,11 +1,13 @@
 <template>
     <HeaderDesktop />
-    <DesktopNavbar :selected="'AssignmentsView'" />
-    <main class="view-blank">
-        <div class="view-container">
+    <div class="flex-container">
+        <DesktopNavbar :selected="'AssignmentsView'" />
+        <main class="view-blank">
+            <div class="view-container">
 
-        </div>
-    </main>
+            </div>
+        </main>
+    </div>
 </template>
 
 <script setup>
