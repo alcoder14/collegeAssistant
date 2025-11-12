@@ -17,6 +17,6 @@
     color: $white;
     padding: 5px;
     border-radius: 4px;
-    margin-bottom: 10px;
+
   }
 </style>
