@@ -5,3 +5,10 @@ export const transformDate = (dateString) => {
   // Return in the desired format
   return `${day}. ${month}. ${year}`;
 }
+export const transformDateBack = (dateString) => {
+  // Split by dot + space
+  const [day, month, year] = dateString.split('. ').map(part => part.trim());
+
+  // Return in the desired format
+  return `${year}-${month}-${day}`;
+};

@@ -4,7 +4,7 @@
       <nav>
         <router-link to="/dashboard" class="navbar-item" :class="{'item-selected': props.selected === 'DashboardView'}"><font-awesome-icon icon="fa fa-grip" class="navbar-icon"/>Dashboard </router-link>
           <router-link to="/schedule" class="navbar-item" :class="{'item-selected': props.selected === 'ScheduleView'}"><font-awesome-icon icon="fa fa-table" class="navbar-icon"/>Schedule</router-link>
-          <router-link to="/exams" class="navbar-item" :class="{'item-selected': props.selected === 'ExamsView'}"><font-awesome-icon icon="fa fa-clipboard-list" class="navbar-icon"/>Exams </router-link>
+          <router-link to="/tests" class="navbar-item" :class="{'item-selected': props.selected === 'ExamsView'}"><font-awesome-icon icon="fa fa-clipboard-list" class="navbar-icon"/>Tests </router-link>
           <router-link to="/assignments" class="navbar-item" :class="{'item-selected': props.selected === 'AssignmentsView'}"><font-awesome-icon icon="fa fa-calendar-days" class="navbar-icon"/>Assignments</router-link>
         <router-link to="/notes" class="navbar-item" :class="{'item-selected': props.selected === 'NotesView'}"> <font-awesome-icon icon="fa fa-note-sticky" class="navbar-icon"/>Notes</router-link>
       </nav>

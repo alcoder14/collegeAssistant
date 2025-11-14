@@ -1,5 +1,5 @@
 import { db, auth } from '@/firebase';
-import { addDoc, collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { addDoc, collection, query, where, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { transformDate } from './general';
 
 export const addExamDate = async (examData) => {
@@ -23,6 +23,30 @@ export const addExamDate = async (examData) => {
   }
 
 };
+
+
+export const updateExamDate = async (id, examData) => {
+  // Transform date (keep consistent)
+  examData.date = transformDate(examData.date);
+
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+
+    const docRef = doc(db, "examDates", id);
+
+    await updateDoc(docRef, {
+      ...examData,
+      uid: user.uid,
+    });
+
+    return id;
+  } catch (error) {
+    console.error("Error updating exam:", error);
+    throw error;
+  }
+};
+
 
 export const getUserExams = async () => {
   try {

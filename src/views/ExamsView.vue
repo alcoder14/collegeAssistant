@@ -9,16 +9,16 @@
                 <div class="exams-interface">
                     <div class="management-row">
                         <div class="left-side">
-                            <h2 class="container-title">Exams</h2>
+                            <h2 class="container-title">Tests</h2>
                             <button @click="toggleExamModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
                         </div>
                         <div class="right-side">
-                            <DropdownComponent :options="typeOptions" :selected-option="selectedType" @closed="toggleExamModal"/>
+                            <DropdownComponent :options="typeOptions" :selected-option="selectedType" @closed="toggleExamModal" @onSelected="setNewSelected"/>
                         </div>
                     </div>
 
                     <div class="exams-container" v-if="examsData.length > 0">
-                        <div class="exam-card" v-for="item in examsData" :key="item.id" :style="{borderBottomColor: item.color}">
+                        <div class="exam-card" v-for="(item, i) in filteredExamsData" :key="item.id" :style="{borderBottomColor: item.color}">
                             <div class="left-side">
                                 <h3>{{ item.subjectName }}</h3>
                                 <h4>{{ item.type }}</h4>
@@ -26,7 +26,7 @@
                                 <h5>{{ item.description }}</h5>
                             </div>
                             <div class="right-side">
-                                <button><font-awesome-icon icon="fa fa-pen" /></button>
+                                <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(i, item.subjectID, item.type)" /></button>
                                 <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
                             </div>
                         </div>
@@ -39,7 +39,12 @@
 
     </div>
 
-    <ExamModal @closed="toggleExamModal" @listUpdated="prepareData" v-if="examModalVisible" />
+    <!-- Add Mode -->
+    <ExamModal @closed="toggleExamModal" @listUpdated="prepareData" v-if="examModalVisible" :examData="null" :extractedSubject="null" extractedType="exam"  />
+
+    <!-- Update Mode -->
+    <ExamModal @closed="toggleUpdateExamModal" @listUpdated="prepareData" v-if="updateExamModalVisible" :examData="exams[cardNumber]" :extractedSubject="cardSubject" :extractedType="cardType" />
+
 </template>
 
 <script setup>
@@ -54,6 +59,23 @@
     const examModalVisible = ref(false)
     const toggleExamModal = () =>{
         examModalVisible.value = !examModalVisible.value
+    }
+
+    const cardSubject = ref(null)
+    const cardType = ref(null)
+    let cardNumber;
+
+    const extractCardData = (card, subject, type) => {
+        cardNumber = card
+        cardSubject.value = subject
+        cardType.value = type
+        toggleUpdateExamModal()
+    }
+
+
+    const updateExamModalVisible = ref(false)
+    const toggleUpdateExamModal = () =>{
+        updateExamModalVisible.value = !updateExamModalVisible.value
     }
 
     const typeOptions = ref([
@@ -72,7 +94,6 @@
     ])
 
     const selectedType = ref("all")
-        
 
     onMounted( () => {
         prepareData()
@@ -104,6 +125,7 @@
                     examsData.value.push({
                         ...exam,
                         subjectName: subject.subjectName,
+                        subjectID: subject.id,
                         color: subject.color
                     })
                 }
@@ -112,13 +134,28 @@
 
         console.log("BELOW:")
         console.log(examsData.value)
+        filterByType()
     }
 
     const removeExam = async (id) => {
-        await deleteExam(id)
         examsData.value = examsData.value.filter((exam) => exam.id !== id)
+        filteredExamsData.value = filteredExamsData.value.filter((exam) => exam.id !== id)
+        await deleteExam(id)
     }
 
+    const setNewSelected = (value) => {
+        selectedType.value = value
+        filterByType()
+    }
+
+    const filteredExamsData = ref([])
+    const filterByType = () => {
+        if (selectedType.value === "all") {
+            filteredExamsData.value = examsData.value
+        } else {
+            filteredExamsData.value = examsData.value.filter(exam => exam.type === selectedType.value)
+        }
+    }
 
 </script>
 

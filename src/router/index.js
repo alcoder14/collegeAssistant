@@ -53,7 +53,7 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/exams',
+    path: '/tests',
     name: 'Exams',
     component: ExamsView,
     meta: { requiresAuth: true }
