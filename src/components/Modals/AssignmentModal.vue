@@ -42,6 +42,7 @@
     const closeModal = (event) => {
         if (event.target === event.currentTarget) {
             emit('closed');
+            console.log("test")
         }
     }
 
