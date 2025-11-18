@@ -1,23 +1,34 @@
 <template>
     <main class="modal-container"  @click="closeModal($event)">
-        <form class="modal-window" @submit.prevent="handleConfirm">
-            <h2 class="modal-title" v-if="props.assignmentData === null">New Assignment</h2>
-            <h2 class="modal-title" v-else>Update Assignment</h2>
+        <form class="modal-window" @submit.prevent="handleConfirm" style="width: 40%">
+            <h2 class="modal-title" v-if="props.noteData === null">New Note</h2>
+            <h2 class="modal-title" v-else>Update Note</h2>
 
             <div class="input-fields" v-if="!loadingData">
-                <input placeholder="Title" type="text" class="text" v-model="assignmentData.title">
-                <textarea placeholder="Description (optional)" v-model="assignmentData.description"></textarea>
                 <div class="input-row">
-                    <DropdownComponent :selected-option="selectedSubject" :options="subjectOptions" style="margin-bottom: 1rem;" @onSelected="updateAssignmentSubjectID" />
-                    <input type="date" class="date" v-model="assignmentData.date">
+                    <input placeholder="Title" type="text" class="text" v-model="noteData.title">
+                    <DropdownComponent :selected-option="selectedSubject" :options="subjectOptions" style="margin-bottom: 1rem;" @onSelected="updateNoteSubjectID" />
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <editor
+                        id="uuid"
+                        apiKey="y0mzuol04buvqvw5ccco93okfd24ddr4sxbaqitbmq2hidgt"
+                        style="margin-bottom: 1rem;"
+                        v-model="noteData.content"
+                        :init="{
+                            plugins: 'advlist anchor autolink charmap code fullscreen help  insertdatetime link lists preview searchreplace table visualblocks wordcount',
+                            toolbar: 'undo redo | styles | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist',
+                            height: 300,
+                        }"
+                    />
                 </div>
             </div>
 
             <ErrorMessage v-if="errMessage !== ''" :error-msg="errMessage" style="margin-bottom: 1rem;" />
 
-            <button class="light-purple-btn" type="submit" v-if="!loadingData && props.assignmentData === null">Add</button>
+            <button class="light-purple-btn" type="submit" v-if="!loadingData && props.noteData === null">Add</button>
 
-            <button class="light-purple-btn" type="submit" v-if="!loadingData && props.assignmentData !== null">Update</button>
+            <button class="light-purple-btn" type="submit" v-if="!loadingData && props.noteData !== null">Update</button>
 
             <div v-if="loadingData"> 
                 Loading
@@ -32,11 +43,12 @@
     import DropdownComponent from '../Elements/DropdownComponent.vue';
     import ErrorMessage from '../ErrorMessage.vue';
     import { getUserSubjects } from '@/composables/scheduleQueries';
-    import { transformDateBack } from '@/composables/general';
-    import { addDueAssignment } from '@/composables/assignmentQueries';
-    import { updateDueAssignment } from '@/composables/assignmentQueries';
+    //import { transformDateBack } from '@/composables/general';
+    import { addNote } from '@/composables/noteQueries';
+    import { updateNote } from '@/composables/noteQueries';
+    import Editor from '@tinymce/tinymce-vue'
 
-    const props = defineProps(["assignmentData", "extractedSubject"])
+    const props = defineProps(["noteData", "extractedSubject"])
     const emit = defineEmits(['closed', 'listUpdated']);
 
     const closeModal = (event) => {
@@ -47,7 +59,7 @@
 
     const userSubjects = ref([])
     const subjectOptions = ref([])
-    const assignmentData = ref({})
+    const noteData = ref({})
 
     const cardID = ref()
     const selectedSubject = ref(null)
@@ -65,25 +77,23 @@
         console.log("here it be")
         console.log(subjectOptions.value)
 
-        if(props.assignmentData === null){
+        if(props.noteData === null){
 
             selectedSubject.value = subjectOptions.value[0].value
 
-            assignmentData.value.title = ""
-            assignmentData.value.description = ""
-            assignmentData.value.subjectID = selectedSubject.value
-            assignmentData.value.date = null
+            noteData.value.title = ""
+            noteData.value.content = ""
+            noteData.value.subjectID = selectedSubject.value
 
         } else {
 
             selectedSubject.value = props.extractedSubject
 
-            assignmentData.value.description = props.assignmentData.description
-            assignmentData.value.title = props.assignmentData.title
-            assignmentData.value.subjectID = props.assignmentData.subjectID
-            assignmentData.value.date = transformDateBack(props.assignmentData.date)
+            noteData.value.content = props.noteData.content
+            noteData.value.title = props.noteData.title
+            noteData.value.subjectID = props.noteData.subjectID
             
-            cardID.value = props.assignmentData.id
+            cardID.value = props.noteData.id
 
         }
 
@@ -91,56 +101,53 @@
         loadingData.value = false
     })
 
-    const updateAssignmentSubjectID = (value) => {
+    const updateNoteSubjectID = (value) => {
         selectedSubject.value = value
-        assignmentData.value.subjectID = value
+        noteData.value.subjectID = value
     }
 
 
     const handleConfirm = () => {
-        if(props.assignmentData === null){
+        if(props.noteData === null){
             handleInsert()
         } else {
             handleUpdate()
         }
     }
 
-    assignmentData.value.date == null
+    noteData.value.date == null
     const errMessage = ref("")
     const handleInsert = async () => {
         errMessage.value = ""
-        if(assignmentData.value.title.trim() == ""){
+        if(noteData.value.title.trim() == ""){
             errMessage.value = "Title Cannot Be Empty"
             return;
-        } else if (assignmentData.value.date == null){
-            errMessage.value = "Please Select a Date"
-            return;
-        } 
+        }
     
         try {
-            await addDueAssignment(assignmentData.value);
+            await addNote(noteData.value);
             emit("closed");
             emit("listUpdated")
         } catch (error) {
-            alert("Failed to add exam. Please try again.");
+            alert("Failed. Please try again.");
         }
     
     };
 
     const handleUpdate = async () => {
         errMessage.value = ""
-        if(assignmentData.value.date == null){
-            errMessage.value = "Please Select a Date"
+        if(noteData.value.title.trim() == ""){
+            errMessage.value = "Title Cannot Be Empty"
             return;
         }
     
         try {
-            console.log(assignmentData.value)
-            await updateDueAssignment(cardID.value, assignmentData.value);
+            console.log(noteData.value)
+            await updateNote(cardID.value, noteData.value);
             emit("closed");
             emit("listUpdated")
         } catch (error) {
-            alert("Failed to add exam. Please try again.");
+            alert("Failed. Please try again.");
         }
     }
 
@@ -163,7 +170,6 @@
         font-size: 1rem;
       }
       .input-row{
-        margin-top: 1rem;
         display: grid;
         grid-template-columns: 49% 49%;
         justify-content: space-between;
