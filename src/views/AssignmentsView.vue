@@ -20,9 +20,9 @@
                     <div class="assignments-container" v-if="assignmentsData.length > 0">
                         <div class="assignment-card" v-for="(item, i) in filteredAssignmentsData" :key="item.id" :style="{borderBottomColor: item.color}">
                             <div class="left-side">
-                                <h3>{{ item.date }}</h3>
-                                <h4>{{ item.description }}</h4>
-                                <h5>{{ item.subjectName }}</h5>
+                                <h3 :style="{color: item.color}">Due: {{ item.date }}</h3>
+                                <h4>Task: {{ item.title }}</h4>
+                                <h5>Subject: {{ item.subjectName }}</h5>
                             </div>
                             <div class="right-side">
                                 <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(i, item.subjectID)" /></button>
@@ -183,8 +183,11 @@
         h4, h5{
             font-weight: lighter;
         }
-        h3, h4 {
-            margin-bottom: 0.5rem;
+        h3{
+            margin-bottom: 1rem;
+        }
+        h4{
+            margin-bottom: 0.3rem;
         }
       }
 

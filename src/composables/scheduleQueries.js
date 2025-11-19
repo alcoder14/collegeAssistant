@@ -141,23 +141,39 @@ export const deleteSubjectAndTheirPositions = async (subjectId) => {
     await deleteDoc(subjectRef);
     console.log(`Deleted subject ${subjectId}`);
 
-    // --- 2️⃣ Delete all subjectPositions linked to this subject ---
-    const q = query(
-      collection(db, 'subjectPositions'),
-      where('userID', '==', user.uid),
-      where('subjectID', '==', subjectId)
-    );
+    // Helper to delete documents from any collection
+    const deleteFromCollection = async (collectionName) => {
+      const q = query(
+        collection(db, collectionName),
+        where('userID', '==', user.uid),
+        where('subjectID', '==', subjectId)
+      );
 
-    const snapshot = await getDocs(q);
-    const deletePromises = snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref));
-    await Promise.all(deletePromises);
+      const snapshot = await getDocs(q);
+      const deletePromises = snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref));
+      await Promise.all(deletePromises);
 
-    console.log(`Deleted ${snapshot.size} subject position(s) for subject ${subjectId}`);
+      console.log(`Deleted ${snapshot.size} document(s) from ${collectionName} for subject ${subjectId}`);
+    };
+
+    // --- 2️⃣ Delete subjectPositions ---
+    await deleteFromCollection('subjectPositions');
+
+    // --- 3️⃣ Delete linked notes ---
+    await deleteFromCollection('notes');
+
+    // --- 4️⃣ Delete linked dueAssignments ---
+    await deleteFromCollection('dueAssignments');
+
+    // --- 5️⃣ Delete linked examDates ---
+    await deleteFromCollection('examDates');
+
   } catch (error) {
-    console.error('Error deleting subject and related positions:', error);
+    console.error('Error deleting subject and related data:', error);
     throw error;
   }
 };
+
 
 export const getUserSchedule = async () => {
   try {

@@ -28,7 +28,7 @@ export const addNote = async (noteData) => {
 };
 
 
-export const updateDueAssignment = async (id, noteData) => {
+export const updateNote = async (id, noteData) => {
 
   try {
     const user = auth.currentUser;
