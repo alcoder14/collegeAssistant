@@ -1,7 +1,10 @@
 <template>
       <section class="form-page-block block-1">
           <div class="slogan-container">
-            <h1>COLLEGE <br> ASSISTANT</h1>
+            <div class="logo-container">
+              <img src="@/assets/CollegeAssistantLogo.png">
+              <h1>COLLEGE <br> ASSISTANT</h1>
+            </div>
             <h3> All your subjects, schedules, and success in one place. </h3>
             <div class="check-option">
               <font-awesome-icon icon="fa fa-check" class="check-light" />
@@ -30,4 +33,13 @@
   
   <style lang="scss" scoped>
       @import "@/assets/style.scss";
+      .logo-container{
+        display: flex;
+        flex-direction: row;
+        img{
+          height: 22vh;
+          width: 22vh;
+          margin-right: 2vh;
+        }
+      }
   </style>

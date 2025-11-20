@@ -1,6 +1,9 @@
 <template>
     <header>
+      <div class="logo-container">
+        <img src="@/assets/CollegeAssistantLogo.png">
         <h1>COLLEGE ASSISTANT</h1>
+      </div>
         <div class="weather-container" v-if="weather != null">
           <h3 class="weather-data">Temperature: {{ weather.current_weather.temperature }} °C</h3>
         </div>
@@ -66,12 +69,22 @@ onMounted(() => {
       }
       h1{
         color: $white;
-        font-weight: bold;
+        font-weight: lighter;
         font-size: 2rem;
       }
       .weather-data{
         color: $white;
         font-weight: lighter;
         font-size: 1.1rem;
+      }
+      .logo-container{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      img{
+        height: 5vh;
+        width: 5vh;
+        margin-right: 1rem;
       }
   </style>
