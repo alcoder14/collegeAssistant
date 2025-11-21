@@ -329,7 +329,7 @@ const deleteSubject = async (id) => {
 .subjects-container{
   width: 100%;
   background-color: $darkest;
-  min-height: 25vh;
+  min-height: 16vh;
   user-select: none;
   .subjects{
       padding-left: 1rem;
