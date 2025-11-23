@@ -6,7 +6,7 @@
         <main class="view-blank">
             <div class="view-container">
 
-                <div class="exams-interface">
+                <div class="exams-interface interface">
                     <div class="management-row">
                         <div class="left-side">
                             <h2 class="container-title">Tests</h2>
@@ -16,13 +16,13 @@
                             <DropdownComponent :options="typeOptions" :selected-option="selectedType" @closed="toggleExamModal" @onSelected="setNewSelected"/>
                         </div>
                     </div>
-
-                    <div class="exams-container" v-if="examsData.length > 0">
+                    <!-- 
+                    <div class="exams-container container" v-if="examsData.length > 0">
                         <div class="exam-card" v-for="(item, i) in filteredExamsData" :key="item.id" :style="{borderBottomColor: item.color}">
                             <div class="left-side">
-                                <h3>{{ item.subjectName }}</h3>
-                                <h4>{{ item.type }}</h4>
-                                <h4>{{ item.date }}</h4>
+                                <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h3>
+                                <h4 :style="{color: item.color}">{{ item.date }}</h4>
+                                <h4>{{ item.subjectName }}</h4>
                                 <h5>{{ item.description }}</h5>
                             </div>
                             <div class="right-side">
@@ -32,8 +32,106 @@
                         </div>
                     </div>
 
+                    <div class="placeholder" v-else>
+                        No Notes To Show
+                    </div>
+
+                    -->
+
+                    <div class="exams-container" v-if="examsData.length > 0 ">
+
+                        <div class="inner-container" v-if="todayExams.length > 0">
+
+                            <div class="top-row">
+                                <h1>Today</h1>
+                                <div class="line"></div>
+                            </div>
+
+                            <div class="inner-box-container">
+                                <div class="exam-card" v-for="(item) in todayExams" :key="item.id" :style="{borderBottomColor: item.color}">
+
+                                    <div class="left-side">
+                                        <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h3>
+                                        <h4 :style="{color: item.color}">{{ item.date }}</h4>
+                                        <h4>{{ item.subjectName }}</h4>
+                                        <h5>{{ item.description }}</h5>
+                                    </div>
+
+                                    <div class="right-side">
+                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID, item.type)" /></button>
+                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="inner-container" v-if="futureExams.length > 0">
+                            <div class="top-row">
+                                <h1>Upcoming</h1>
+                                <div class="line"></div>
+                            </div>
+
+                            <div class="inner-box-container">
+                                <div class="exam-card" v-for="(item) in futureExams" :key="item.id" :style="{borderBottomColor: item.color}">
+
+                                    <div class="left-side">
+                                        <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h3>
+                                        <h4 :style="{color: item.color}">{{ item.date }}</h4>
+                                        <h4>{{ item.subjectName }}</h4>
+                                        <h5>{{ item.description }}</h5>
+                                    </div>
+
+                                    <div class="right-side">
+                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID, item.type)" /></button>
+                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="inner-container" v-if="pastExams.length > 0">
+                            <div class="top-row">
+                                <h1>Past</h1>
+                                <div class="line"></div>
+                            </div>
+
+                            <div class="inner-box-container">
+                                <div class="exam-card" v-for="(item) in pastExams" :key="item.id" :style="{borderBottomColor: item.color}">
+
+                                    <div class="left-side">
+                                        <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h3>
+                                        <h4 :style="{color: item.color}">{{ item.date }}</h4>
+                                        <h4>{{ item.subjectName }}</h4>
+                                        <h5>{{ item.description }}</h5>
+                                        <div class="result-options" v-if="item.result === null">
+                                            <button class="result-btn" style="margin-right: 0.2rem;" @click="updateResult(item.id, 'success')"><font-awesome-icon icon="fa fa-check"/> Passed</button>
+                                            <button class="result-btn" @click="updateResult(item.id, 'failure')"><font-awesome-icon icon="fa fa-xmark"/> Failed</button>
+                                        </div>
+                                        <div class="result-message" v-if="item.result === 'success'">
+                                            <p><font-awesome-icon icon="fa fa-check"/> Passed</p>
+                                            <button class="result-btn" @click="updateResult(item.id, null)">Undo</button>
+                                        </div>
+                                        <div class="result-message" v-if="item.result === 'failure'">
+                                            <p><font-awesome-icon icon="fa fa-xmark"/> Failed</p>
+                                            <button class="result-btn" @click="updateResult(item.id, null)">Undo</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="right-side">
+                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID, item.type)" /></button>
+                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div> 
+
+
+                    </div>                   
                 </div>
-        
             </div>
         </main>
 
@@ -43,7 +141,7 @@
     <ExamModal @closed="toggleExamModal" @listUpdated="prepareData" v-if="examModalVisible" :examData="null" :extractedSubject="null" extractedType="exam"  />
 
     <!-- Update Mode -->
-    <ExamModal @closed="toggleUpdateExamModal" @listUpdated="prepareData" v-if="updateExamModalVisible" :examData="exams[cardNumber]" :extractedSubject="cardSubject" :extractedType="cardType" />
+    <ExamModal @closed="toggleUpdateExamModal" @listUpdated="prepareData" v-if="updateExamModalVisible" :examData="chosenCard" :extractedSubject="cardSubject" :extractedType="cardType" />
 
 </template>
 
@@ -55,6 +153,8 @@
     import { ref, onMounted } from "vue"
     import { getUserExams, deleteExam } from '@/composables/examQueries';
     import { getUserSubjects } from '@/composables/scheduleQueries';
+    import { compareDateToToday } from '@/composables/general';
+    import { updateExamResult } from '@/composables/examQueries';
 
     const examModalVisible = ref(false)
     const toggleExamModal = () =>{
@@ -63,10 +163,11 @@
 
     const cardSubject = ref(null)
     const cardType = ref(null)
-    let cardNumber;
+    const chosenCard = ref(null);
 
-    const extractCardData = (card, subject, type) => {
-        cardNumber = card
+    const extractCardData = (id, subject, type) => {
+        chosenCard.value = exams.value.find((exam) => exam.id === id)
+
         cardSubject.value = subject
         cardType.value = type
         toggleUpdateExamModal()
@@ -126,7 +227,8 @@
                         ...exam,
                         subjectName: subject.subjectName,
                         subjectID: subject.id,
-                        color: subject.color
+                        color: subject.color,
+                        timeStatus: compareDateToToday(exam.date)
                     })
                 }
             })
@@ -140,6 +242,7 @@
     const removeExam = async (id) => {
         examsData.value = examsData.value.filter((exam) => exam.id !== id)
         filteredExamsData.value = filteredExamsData.value.filter((exam) => exam.id !== id)
+        filterByTimeStatus(filteredExamsData.value)
         await deleteExam(id)
     }
 
@@ -155,24 +258,86 @@
         } else {
             filteredExamsData.value = examsData.value.filter(exam => exam.type === selectedType.value)
         }
+        filterByTimeStatus(filteredExamsData.value)
+    }
+
+    const pastExams = ref([])
+    const todayExams = ref([])
+    const futureExams = ref([])
+
+    const filterByTimeStatus = (exams) => {
+        pastExams.value = []
+        todayExams.value = []
+        futureExams.value = []
+
+        exams.forEach((exam) => {
+            if(exam.timeStatus === "past"){
+                pastExams.value.push(exam)
+            } else if (exam.timeStatus === "today"){
+                todayExams.value.push(exam)
+            } else {
+                futureExams.value.push(exam)
+            }
+        })
+    }
+
+    const updateResult = async (id, result) => {
+
+        examsData.value.forEach((exam) => {
+            if(exam.id === id){
+                exam.result = result
+            } 
+        })
+
+        filteredExamsData.value.forEach((exam) => {
+            if(exam.id === id){
+                exam.result = result
+            }
+        })
+        pastExams.value.forEach((exam) => {
+            if(exam.id === id){
+                exam.result = result
+            }
+        })
+
+        let examToUpdate = examsData.value.find((exam) => exam.id === id)
+
+        await updateExamResult(id, examToUpdate)
     }
 
 </script>
 
 <style lang="scss" scoped>
       @import "@/assets/style.scss";
-
-      .exams-interface{
-        background-color: $darkest;
-        min-height: 83vh;
-      }
+    
       .exams-container{
+        display: flex;
+        flex-direction: column;
         margin: 1rem;
-        margin-top: 0;
-        display: grid;
-        grid-template-columns: repeat(5, 19%);
-        justify-content: space-between;
       }
+      .inner-container{
+        .top-row{
+            display: flex;
+            flex-direction: column;
+            h1{
+                font-size: 1.5rem;
+                color: $white;
+                margin-bottom: 0.3rem;
+            }
+            .line{
+                width: 100%;
+                background-color: $light;
+                height: 0.4rem;
+            }
+        }
+        .inner-box-container{
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(5, 19%);
+            justify-content: space-between;
+        }
+      }
+
       .exam-card{
         padding: 1rem;
         background-color: $dark;
@@ -185,9 +350,22 @@
         h4, h5{
             font-weight: lighter;
         }
-        h3, h4 {
+        h4 {
             margin-bottom: 0.5rem;
         }
+      }
+
+      .result-message, .result-options{
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        p{
+            margin-right: 0.2rem;
+        }
+      }
+      .result-btn{
+        font-size: 0.7rem;
       }
 
 </style>

@@ -86,6 +86,7 @@
             examData.value.subjectID = selectedSubject.value
             examData.value.date = null
             examData.value.description = ""
+            examData.value.result = null
 
         } else {
 

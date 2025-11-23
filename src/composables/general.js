@@ -31,3 +31,17 @@ export const generateTime = () => {
 
   return formattedTime;
 }
+export const compareDateToToday = (dateStr) => {
+  // Split the input string "dd. mm. yyyy"
+  const [dd, mm, yyyy] = dateStr.split('.').map(Number);
+  // Create a Date object for the input (months are 0-indexed)
+  const inputDate = new Date(yyyy, mm - 1, dd);
+
+  // Get today's date without time
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // reset time to midnight
+
+  // Compare
+  if (inputDate.getTime() === today.getTime()) return "today";
+  return inputDate < today ? "past" : "future";
+};

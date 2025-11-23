@@ -6,7 +6,7 @@
         <main class="view-blank">
             <div class="view-container">
 
-                <div class="notes-interface">
+                <div class="notes-interface interface">
                     <div class="management-row">
                         <div class="left-side">
                             <h2 class="container-title">Notes</h2>
@@ -17,7 +17,7 @@
                         </div>
                     </div>
 
-                    <div class="notes-container" v-if="notesData.length > 0">
+                    <div class="notes-container container" v-if="notesData.length > 0">
                         <div class="note-card" v-for="(item, i) in filteredNotesData" :key="item.id" :style="{borderBottomColor: item.color}">
                             <div class="left-side">
                                 <h3>{{ item.title }}</h3>
@@ -174,18 +174,6 @@
 
 <style lang="scss" scoped>
       @import "@/assets/style.scss";
-
-      .notes-interface{
-        background-color: $darkest;
-        min-height: 83vh;
-      }
-      .notes-container{
-        margin: 1rem;
-        margin-top: 0;
-        display: grid;
-        grid-template-columns: repeat(5, 19%);
-        justify-content: space-between;
-      }
       .note-card{
         padding: 1rem;
         background-color: $dark;

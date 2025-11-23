@@ -6,7 +6,7 @@
         <main class="view-blank">
             <div class="view-container">
 
-                <div class="assignments-interface">
+                <div class="assignments-interface interface">
                     <div class="management-row">
                         <div class="left-side">
                             <h2 class="container-title">Assignments</h2>
@@ -17,7 +17,7 @@
                         </div>
                     </div>
 
-                    <div class="assignments-container" v-if="assignmentsData.length > 0">
+                    <div class="assignments-container container" v-if="assignmentsData.length > 0">
                         <div class="assignment-card" v-for="(item, i) in filteredAssignmentsData" :key="item.id" :style="{borderBottomColor: item.color}">
                             <div class="left-side">
                                 <h3 :style="{color: item.color}">Due: {{ item.date }}</h3>
@@ -159,18 +159,6 @@
 
 <style lang="scss" scoped>
       @import "@/assets/style.scss";
-
-      .assignments-interface{
-        background-color: $darkest;
-        min-height: 83vh;
-      }
-      .assignments-container{
-        margin: 1rem;
-        margin-top: 0;
-        display: grid;
-        grid-template-columns: repeat(5, 19%);
-        justify-content: space-between;
-      }
       .assignment-card{
         padding: 1rem;
         background-color: $dark;

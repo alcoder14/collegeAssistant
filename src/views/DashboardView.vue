@@ -150,7 +150,7 @@
     const getToday = () => {
 
         const now = new Date();
-        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
         const months = [
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
@@ -158,11 +158,15 @@
 
         dayWord.value = days[now.getDay()];
         date.value = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-        dayNumber.value = now.getDay() === 0 ? 7 : now.getDay() - 1;
+        dayNumber.value = now.getDay() === 0 ? 6 : now.getDay() - 1;
 
         console.log(dayWord.value)
         console.log(date.value)
         console.log(dayNumber.value)
+
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ... 6 = Saturday
+        console.log(dayOfWeek);
     }
 
     const subjectPositions = ref()

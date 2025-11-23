@@ -90,3 +90,24 @@ export const deleteExam = async (examId) => {
     throw error;
   }
 };
+
+
+export const updateExamResult = async (id, examData) => {
+
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+
+    const docRef = doc(db, "examDates", id);
+
+    await updateDoc(docRef, {
+      ...examData,
+      uid: user.uid,
+    });
+
+    return id;
+  } catch (error) {
+    console.error("Error updating exam:", error);
+    throw error;
+  }
+};
