@@ -20,9 +20,9 @@
                     <div class="notes-container container" v-if="notesData.length > 0">
                         <div class="note-card" v-for="(item, i) in filteredNotesData" :key="item.id" :style="{borderBottomColor: item.color}">
                             <div class="left-side">
-                                <h3>{{ item.title }}</h3>
-                                <h5>{{ item.date }} at {{ item.time }}</h5>
-                                <h4>{{ item.subjectName }}</h4>
+                                <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.title }}</h3>
+                                <h4 :style="{color: item.color}">{{ item.date }} at {{ item.time }}</h4>
+                                <h4 style="margin-bottom: 0;">{{ item.subjectName }}</h4>
                             </div>
                             <div class="right-side">
                                 <button @click="setReviewNoteData(item)"><font-awesome-icon icon="fa fa-eye"/></button>
@@ -183,11 +183,9 @@
         border-bottom: 2px solid;
         margin-bottom: 1rem;
         color: $white;
-        h4, h5{
-            font-weight: lighter;
-        }
-        h3, h5 {
+        h4{
             margin-bottom: 0.5rem;
+            font-weight: lighter;
         }
       }
 

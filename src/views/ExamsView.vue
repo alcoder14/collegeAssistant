@@ -51,8 +51,8 @@
                                 <div class="exam-card" v-for="(item) in todayExams" :key="item.id" :style="{borderBottomColor: item.color}">
 
                                     <div class="left-side">
-                                        <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h3>
-                                        <h4 :style="{color: item.color}">{{ item.date }}</h4>
+                                        <h3 :style="{color: item.color}"> {{ item.date }}</h3>
+                                        <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
                                         <h4>{{ item.subjectName }}</h4>
                                         <h5>{{ item.description }}</h5>
                                     </div>
@@ -77,8 +77,8 @@
                                 <div class="exam-card" v-for="(item) in futureExams" :key="item.id" :style="{borderBottomColor: item.color}">
 
                                     <div class="left-side">
-                                        <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h3>
-                                        <h4 :style="{color: item.color}">{{ item.date }}</h4>
+                                        <h3 :style="{color: item.color}"> {{ item.date }}</h3>
+                                        <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
                                         <h4>{{ item.subjectName }}</h4>
                                         <h5>{{ item.description }}</h5>
                                     </div>
@@ -102,8 +102,8 @@
                                 <div class="exam-card" v-for="(item) in pastExams" :key="item.id" :style="{borderBottomColor: item.color}">
 
                                     <div class="left-side">
-                                        <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h3>
-                                        <h4 :style="{color: item.color}">{{ item.date }}</h4>
+                                        <h3 :style="{color: item.color}"> {{ item.date }}</h3>
+                                        <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
                                         <h4>{{ item.subjectName }}</h4>
                                         <h5>{{ item.description }}</h5>
                                         <div class="result-options" v-if="item.result === null">
