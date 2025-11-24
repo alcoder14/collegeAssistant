@@ -81,7 +81,7 @@
                             <div class="content-subject">
                                 <span class="content-subject-text" :style="{backgroundColor: nextTest.color}">{{ nextTest.subjectName }}</span>
                             </div>
-                            <h2 class="content-title"> Due: {{ nextTest.date }}</h2>
+                            <h2 class="content-title">{{ nextTest.date }}</h2>
                             <h4 class="content-date">{{ nextTest.title }}</h4>
                             <h4 class="content-date">{{ nextTest.type }}</h4>
                         </div>
@@ -156,7 +156,7 @@
             "July", "August", "September", "October", "November", "December"
         ];
 
-        dayWord.value = days[now.getDay()];
+        dayWord.value = days[now.getDay() - 1];
         date.value = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
         dayNumber.value = now.getDay() === 0 ? 6 : now.getDay() - 1;
 
@@ -244,19 +244,19 @@
         console.log("NOTES: ")
         console.log(notes.value)
 
-        lastNote.value = notes.value[notes.value.length - 1]
-        console.log(lastNote.value)
+        if(notes.value.length > 0){
+            lastNote.value = notes.value[notes.value.length - 1]
+            console.log(lastNote.value)
 
-        const subjectAttr = getSubjectName(lastNote.value.subjectID)
-        console.log(subjectAttr)
-
-        lastNote.value = {
-            ...lastNote.value,
-            subjectName: subjectAttr[0],
-            color: subjectAttr[1]
+            lastNote.value = {
+                ...lastNote.value,
+                subjectName: getSubjectName(lastNote.value.subjectID),
+                color: getSubjectColor(lastNote.value.subjectID)
+            }
+            
+            console.log(lastNote.value)
         }
-        
-        console.log(lastNote.value)
+
     }
 
     const assignments = ref()
@@ -273,17 +273,19 @@
         console.log("ASSIGNMENTS: ")
         console.log(assignments.value)
 
-        nextAssignment.value = assignments.value[0]
+        if(assignments.value.length > 0){
+            console.log("Here:")
+            console.log(assignments.value)
+            nextAssignment.value = assignments.value[0]
+            console.log("Next Assignment: ")
+            console.log(nextAssignment.value)
 
-        const subjectAttr = getSubjectName(nextAssignment.value.subjectID)
-        console.log(subjectAttr)
-
-        nextAssignment.value = {
-            ...nextAssignment.value,
-            subjectName: subjectAttr[0],
-            color: subjectAttr[1]
+            nextAssignment.value = {
+                ...nextAssignment.value,
+                subjectName: getSubjectName(nextAssignment.value.subjectID),
+                color: getSubjectColor(nextAssignment.value.subjectID)
+            }
         }
-
 
     }
 
@@ -301,25 +303,35 @@
         console.log("TESTS: ")
         console.log(tests.value)
 
-        nextTest.value = tests.value[0]
+        if(tests.value.length > 0){
+            nextTest.value = tests.value[0]
 
-        const subjectAttr = getSubjectName(nextTest.value.subjectID)
-        console.log(subjectAttr)
-
-        nextTest.value = {
-            ...nextTest.value,
-            subjectName: subjectAttr[0],
-            color: subjectAttr[1]
+            nextTest.value = {
+                ...nextTest.value,
+                subjectName: getSubjectName(nextTest.value.subjectID),
+                color: getSubjectColor(nextTest.value.subjectID)
+            }
         }
     }
 
     const getSubjectName = (subjectID) => {
+        console.log("Subject ID: " + subjectID)
         for (const subject of subjects.value) {
             if (subject.id === subjectID) {
-                return [subject.subjectName, subject.color];
+                return subject.subjectName;
             }
         }
-        return null; 
+        return null;
+    }
+
+    const getSubjectColor = (subjectID) => {
+        console.log("Subject ID: " + subjectID)
+        for (const subject of subjects.value) {
+            if (subject.id === subjectID) {
+                return subject.color;
+            }
+        }
+        return null;
     }
 
 </script>

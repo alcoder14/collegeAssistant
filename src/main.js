@@ -22,9 +22,9 @@ import { faCalendarDays } from '@fortawesome/free-solid-svg-icons'
 import { faNoteSticky } from '@fortawesome/free-solid-svg-icons'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { faArrowsRotate } from '@fortawesome/free-solid-svg-icons'
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 
-
-library.add(faPlus, faTimes, faPen, faCheck, faTableCellsLarge, faTrash, faRightFromBracket, faUserCircle, faBook, faGrip, faTable, faClipboardList, faCalendarDays, faNoteSticky, faEye, faClock, faArrowsRotate)
+library.add(faPlus, faTimes, faPen, faCheck, faTableCellsLarge, faTrash, faRightFromBracket, faUserCircle, faBook, faGrip, faTable, faClipboardList, faCalendarDays, faNoteSticky, faEye, faClock, faArrowsRotate, faExclamationCircle)
 
 import { createPinia } from 'pinia'
 const pinia = createPinia()

@@ -1,23 +1,20 @@
 <template>
     <main class="modal-container"  @click="closeModal($event)">
-        <form class="modal-window" @submit.prevent="handleConfirm">
+        <form class="modal-window" @submit.prevent="handleConfirm" style="width: 600px">
             <h2 class="modal-title" v-if="props.examData === null">New Test</h2>
             <h2 class="modal-title" v-else>Update Test</h2>
 
             <div class="input-fields" v-if="!loadingData">
-                <div class="input-column">
-                    <input type="date" class="date" v-model="examData.date">
-                    <DropdownComponent :selected-option="selectedType" :options="typeOptions" style="margin-bottom: 1rem;" @onSelected="updateExamType" />
-                    <DropdownComponent :selected-option="selectedSubject" :options="subjectOptions" v-model="examData.subjectID" @onSelected="updateExamSubjectID" /> 
-                </div>
-                <textarea placeholder="Description (optional)" v-model="examData.description"></textarea>
+                <input type="date" class="date" v-model="examData.date" style="margin-bottom: 1rem;" >
+                <DropdownComponent :selected-option="selectedType" :options="typeOptions" style="margin-bottom: 1rem;" @onSelected="updateExamType" />
+                <DropdownComponent :selected-option="selectedSubject" :options="subjectOptions" v-model="examData.subjectID" @onSelected="updateExamSubjectID" style="margin-bottom: 1rem;" /> 
             </div>
 
-            <ErrorMessage v-if="errMessage !== ''" :error-msg="errMessage" style="margin-top: 1rem;" />
+            <ErrorMessage v-if="errMessage !== ''" :error-msg="errMessage" />
 
-            <button class="light-purple-btn" type="submit" style="margin-top: 1rem;" v-if="!loadingData && props.examData === null">Add</button>
+            <button class="light-purple-btn" type="submit" v-if="!loadingData && props.examData === null">Add</button>
 
-            <button class="light-purple-btn" type="submit" style="margin-top: 1rem;" v-if="!loadingData && props.examData !== null">Update</button>
+            <button class="light-purple-btn" type="submit" v-if="!loadingData && props.examData !== null">Update</button>
 
             <div v-if="loadingData"> 
                 Loading
@@ -85,7 +82,6 @@
             examData.value.type = "exam"
             examData.value.subjectID = selectedSubject.value
             examData.value.date = null
-            examData.value.description = ""
             examData.value.result = null
 
         } else {
@@ -99,7 +95,6 @@
             examData.value.type = props.examData.type
             examData.value.subjectID = props.examData.subjectID
             examData.value.date = transformDateBack(props.examData.date)
-            examData.value.description = props.examData.description
             
             cardID.value = props.examData.id
 

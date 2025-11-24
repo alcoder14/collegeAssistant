@@ -73,6 +73,7 @@
             assignmentData.value.description = ""
             assignmentData.value.subjectID = selectedSubject.value
             assignmentData.value.date = null
+            assignmentData.value.completion = false
 
         } else {
 
@@ -82,6 +83,7 @@
             assignmentData.value.title = props.assignmentData.title
             assignmentData.value.subjectID = props.assignmentData.subjectID
             assignmentData.value.date = transformDateBack(props.assignmentData.date)
+            assignmentData.value.completion = props.assignmentData.completion
             
             cardID.value = props.assignmentData.id
 

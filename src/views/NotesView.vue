@@ -9,7 +9,7 @@
                 <div class="notes-interface interface">
                     <div class="management-row">
                         <div class="left-side">
-                            <h2 class="container-title">Notes</h2>
+                            <h2 class="interface-title">Notes</h2>
                             <button @click="toggleNoteModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
                         </div>
                         <div class="right-side">
@@ -17,7 +17,7 @@
                         </div>
                     </div>
 
-                    <div class="notes-container container" v-if="notesData.length > 0">
+                    <div class="notes-container" v-if="notesData.length > 0">
                         <div class="note-card" v-for="(item, i) in filteredNotesData" :key="item.id" :style="{borderBottomColor: item.color}">
                             <div class="left-side">
                                 <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.title }}</h3>
@@ -30,6 +30,15 @@
                                 <button><font-awesome-icon icon="fa fa-trash" @click="removeNote(item.id)" /></button>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="placeholder" v-if="filteredNotesData.length === 0 && !loadingData">
+                        No Notes To Show
+                    </div>
+
+                    <div class="loader" v-if="loadingData">
+                        <atom-spinner :animation-duration="1000" :size="100" color="#55DFD4"/>
+                        <p style="margin-top: 1rem">Loading</p>
                     </div>
 
                 </div>
@@ -59,6 +68,7 @@
     import { getUserSubjects } from '@/composables/scheduleQueries';
     import NoteModal from '@/components/Modals/NoteModal.vue';
     import ReviewNote from '@/components/Modals/ReviewNote.vue';
+    import { AtomSpinner } from 'epic-spinners';
 
     const reviewNoteData = ref(null)
     const setReviewNoteData = (item) => {
@@ -161,6 +171,8 @@
         filterByType()
     }
 
+    const loadingData = ref(true)
+
     const filteredNotesData = ref([])
     const filterByType = () => {
         if (selectedSubject.value === "all") {
@@ -168,12 +180,14 @@
         } else {
             filteredNotesData.value = notesData.value.filter(note => note.subjectID === selectedSubject.value)
         }
+        loadingData.value = false
     }
 
 </script>
 
 <style lang="scss" scoped>
       @import "@/assets/style.scss";
+
       .note-card{
         padding: 1rem;
         background-color: $dark;

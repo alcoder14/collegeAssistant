@@ -9,36 +9,15 @@
                 <div class="exams-interface interface">
                     <div class="management-row">
                         <div class="left-side">
-                            <h2 class="container-title">Tests</h2>
+                            <h2 class="interface-title">Tests</h2>
                             <button @click="toggleExamModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
                         </div>
                         <div class="right-side">
                             <DropdownComponent :options="typeOptions" :selected-option="selectedType" @closed="toggleExamModal" @onSelected="setNewSelected"/>
                         </div>
                     </div>
-                    <!-- 
-                    <div class="exams-container container" v-if="examsData.length > 0">
-                        <div class="exam-card" v-for="(item, i) in filteredExamsData" :key="item.id" :style="{borderBottomColor: item.color}">
-                            <div class="left-side">
-                                <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h3>
-                                <h4 :style="{color: item.color}">{{ item.date }}</h4>
-                                <h4>{{ item.subjectName }}</h4>
-                                <h5>{{ item.description }}</h5>
-                            </div>
-                            <div class="right-side">
-                                <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(i, item.subjectID, item.type)" /></button>
-                                <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="placeholder" v-else>
-                        No Notes To Show
-                    </div>
-
-                    -->
-
-                    <div class="exams-container" v-if="examsData.length > 0 ">
+                    <div class="outer-container" v-if="examsData.length > 0 ">
 
                         <div class="inner-container" v-if="todayExams.length > 0">
 
@@ -130,7 +109,17 @@
                         </div> 
 
 
-                    </div>                   
+                    </div>      
+                    
+                    <div class="placeholder" v-if="futureExams.length == 0 && todayExams.length == 0 && pastExams.length === 0 && !loadingData">
+                        No Tests To Show
+                    </div>
+
+                    <div class="loader" v-if="loadingData">
+                        <atom-spinner :animation-duration="1000" :size="100" color="#55DFD4"/>
+                        <p style="margin-top: 1rem">Loading</p>
+                    </div>
+                    
                 </div>
             </div>
         </main>
@@ -155,6 +144,7 @@
     import { getUserSubjects } from '@/composables/scheduleQueries';
     import { compareDateToToday } from '@/composables/general';
     import { updateExamResult } from '@/composables/examQueries';
+    import { AtomSpinner } from 'epic-spinners';
 
     const examModalVisible = ref(false)
     const toggleExamModal = () =>{
@@ -264,6 +254,7 @@
     const pastExams = ref([])
     const todayExams = ref([])
     const futureExams = ref([])
+    const loadingData = ref(true)
 
     const filterByTimeStatus = (exams) => {
         pastExams.value = []
@@ -279,6 +270,8 @@
                 futureExams.value.push(exam)
             }
         })
+
+        loadingData.value = false
     }
 
     const updateResult = async (id, result) => {
@@ -309,35 +302,6 @@
 
 <style lang="scss" scoped>
       @import "@/assets/style.scss";
-    
-      .exams-container{
-        display: flex;
-        flex-direction: column;
-        margin: 1rem;
-      }
-      .inner-container{
-        .top-row{
-            display: flex;
-            flex-direction: column;
-            h1{
-                font-size: 1.5rem;
-                color: $white;
-                margin-bottom: 0.3rem;
-            }
-            .line{
-                width: 100%;
-                background-color: $light;
-                height: 0.4rem;
-            }
-        }
-        .inner-box-container{
-            margin-top: 1rem;
-            display: grid;
-            grid-template-columns: repeat(5, 19%);
-            justify-content: space-between;
-        }
-      }
-
       .exam-card{
         padding: 1rem;
         background-color: $dark;

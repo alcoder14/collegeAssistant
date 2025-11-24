@@ -9,7 +9,7 @@
                 <div class="assignments-interface interface">
                     <div class="management-row">
                         <div class="left-side">
-                            <h2 class="container-title">Assignments</h2>
+                            <h2 class="interface-title">Assignments</h2>
                             <button @click="toggleAssignmentModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
                         </div>
                         <div class="right-side">
@@ -17,18 +17,88 @@
                         </div>
                     </div>
 
-                    <div class="assignments-container container" v-if="assignmentsData.length > 0">
-                        <div class="assignment-card" v-for="(item, i) in filteredAssignmentsData" :key="item.id" :style="{borderBottomColor: item.color}">
-                            <div class="left-side">
-                                <h3 :style="{color: item.color}">Due: {{ item.date }}</h3>
-                                <h4>Task: {{ item.title }}</h4>
-                                <h5>Subject: {{ item.subjectName }}</h5>
+                    <div class="outer-container" v-if="assignmentsData.length > 0">
+
+                        <div class="inner-container" v-if="dueAssignments.length > 0">
+
+                            <div class="top-row">
+                                <h1>Due</h1>
+                                <div class="line"></div>
                             </div>
-                            <div class="right-side">
-                                <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(i, item.subjectID)" /></button>
-                                <button><font-awesome-icon icon="fa fa-trash" @click="removeAssignment(item.id)" /></button>
+
+                            <div class="inner-box-container">
+                                <div class="assignment-card" v-for="(item) in dueAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
+                                    <div class="left-side">
+                                        <h3 :style="{color: item.color}" v-if="compareDateToToday(item.date) === 'today'">Due: Today</h3>
+                                        <h3 :style="{color: item.color}" v-else>Due: {{ item.date }}</h3>
+                                        <h4>Task: {{ item.title }}</h4>
+                                        <h5>Subject: {{ item.subjectName }}</h5>
+                                        <button class="completion-btn" @click="updateCompletion(item.id, true)">Mark Completed</button>
+                                    </div>
+                                    <div class="right-side">
+                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID)" /></button>
+                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeAssignment(item.id)" /></button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="inner-container" v-if="pastDueAssignments.length > 0">
+
+                            <div class="top-row">
+                                <h1><font-awesome-icon icon="fa fa-exclamation-circle" /> Past Due</h1>
+                                <div class="line"></div>
+                            </div>
+
+                            <div class="inner-box-container">
+                                <div class="assignment-card" v-for="(item) in pastDueAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
+                                    <div class="left-side">
+                                        <h3 :style="{color: item.color}">Due: {{ item.date }}</h3>
+                                        <h4>Task: {{ item.title }}</h4>
+                                        <h5>Subject: {{ item.subjectName }}</h5>
+                                        <button class="completion-btn" @click="updateCompletion(item.id, true)">Mark Completed</button>
+                                    </div>
+                                    <div class="right-side">
+                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID)" /></button>
+                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeAssignment(item.id)" /></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="inner-container" v-if="completedAssignments.length > 0">
+
+                            <div class="top-row">
+                                <h1><font-awesome-icon icon="fa fa-check" /> Completed</h1>
+                                <div class="line"></div>
+                            </div>
+
+                            <div class="inner-box-container">
+                                <div class="assignment-card" v-for="(item) in completedAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
+                                    <div class="left-side">
+                                        <h3 :style="{color: item.color}" v-if="compareDateToToday(item.date) === 'today'">Due: Today</h3>
+                                        <h3 :style="{color: item.color}" v-else>Due: {{ item.date }}</h3>
+                                        <h4>Task: {{ item.title }}</h4>
+                                        <h5>Subject: {{ item.subjectName }}</h5>
+                                        <button class="completion-btn" @click="updateCompletion(item.id, false)">Unmark Completed</button>
+                                    </div>
+                                    <div class="right-side">
+                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID)" /></button>
+                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeAssignment(item.id)" /></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="placeholder" v-if="pastDueAssignments.length == 0 && dueAssignments.length == 0 && completedAssignments.length === 0 && !loadingData">
+                        No Assignments To Show
+                    </div>
+
+                    <div class="loader" v-if="loadingData">
+                        <atom-spinner :animation-duration="1000" :size="100" color="#55DFD4"/>
+                        <p style="margin-top: 1rem">Loading</p>
                     </div>
 
                 </div>
@@ -42,7 +112,7 @@
     <AssignmentModal @closed="toggleAssignmentModal" @listUpdated="prepareData" v-if="assignmentModalVisible" :assignmentData="null"/>
 
     <!-- Update Mode -->
-    <AssignmentModal @closed="toggleUpdateAssignmentModal" @listUpdated="prepareData" v-if="updateAssignmentModalVisible" :assignmentData="assignments[cardNumber]" :extractedSubject="cardSubject" />
+    <AssignmentModal @closed="toggleUpdateAssignmentModal" @listUpdated="prepareData" v-if="updateAssignmentModalVisible" :assignmentData="chosenCard" :extractedSubject="cardSubject" />
 
 </template>
 
@@ -52,9 +122,11 @@
     import DropdownComponent from '@/components/Elements/DropdownComponent.vue';
     import { ref, onMounted } from "vue"
 
-    import { getUserAssignments, deleteDueAssignment } from '@/composables/assignmentQueries';
+    import { getUserAssignments, deleteDueAssignment, updateAssignmentCompletion } from '@/composables/assignmentQueries';
     import { getUserSubjects } from '@/composables/scheduleQueries';
     import AssignmentModal from '@/components/Modals/AssignmentModal.vue';
+    import { compareDateToToday } from '@/composables/general';
+    import { AtomSpinner } from 'epic-spinners';
 
     const assignmentModalVisible = ref(false)
     const toggleAssignmentModal = () =>{
@@ -62,10 +134,10 @@
     }
 
     const cardSubject = ref(null)
-    let cardNumber;
+    const chosenCard = ref(null);
 
-    const extractCardData = (card, subject) => {
-        cardNumber = card
+    const extractCardData = (id, subject) => {
+        chosenCard.value = assignments.value.find((assignment) => assignment.id === id)
         cardSubject.value = subject
         toggleUpdateAssignmentModal()
     }
@@ -123,7 +195,8 @@
                         ...assignment,
                         subjectName: subject.subjectName,
                         subjectID: subject.id,
-                        color: subject.color
+                        color: subject.color,
+                        timeStatus: compareDateToToday(assignment.date)
                     })
                 }
             })
@@ -137,6 +210,7 @@
     const removeAssignment = async (id) => {
         assignmentsData.value = assignmentsData.value.filter((assignment) => assignment.id !== id)
         filteredAssignmentsData.value = filteredAssignmentsData.value.filter((assignment) => assignment.id !== id)
+        filterByCategory(filteredAssignmentsData.value)
         await deleteDueAssignment(id)
     }
 
@@ -153,6 +227,50 @@
         } else {
             filteredAssignmentsData.value = assignmentsData.value.filter(assignment => assignment.subjectID === selectedSubject.value)
         }
+        filterByCategory(filteredAssignmentsData.value)
+    }
+
+    const dueAssignments = ref([])
+    const completedAssignments = ref([])
+    const pastDueAssignments = ref([])
+
+    const loadingData = ref(true)
+
+    const filterByCategory = (assignments) => {
+        dueAssignments.value = []
+        completedAssignments.value = []
+        pastDueAssignments.value = []
+
+        assignments.forEach((assignment) => {
+            if(assignment.completion === true){
+                completedAssignments.value.push(assignment)
+            } else if(assignment.completion === false && assignment.timeStatus === "past"){
+                pastDueAssignments.value.push(assignment)
+            } else if (assignment.completion === false && assignment.timeStatus !== "past"){
+                dueAssignments.value.push(assignment)
+            }
+        })
+
+        loadingData.value = false
+    }
+    
+    const updateCompletion = async (id, value) => {
+        assignmentsData.value.forEach((assignment) => {
+            if(assignment.id === id){
+                assignment.completion = value
+            }
+        })
+        filteredAssignmentsData.value.forEach((assignment) => {
+            if(assignment.id === id){
+                assignment.completion = value
+            }
+        })
+
+        filterByCategory(filteredAssignmentsData.value)
+
+        let assignmentToUpdate = assignmentsData.value.find((assignment) => assignment.id === id)
+
+        await updateAssignmentCompletion(id, assignmentToUpdate)
     }
 
 </script>
@@ -177,6 +295,10 @@
         h4{
             margin-bottom: 0.3rem;
         }
+      }
+      .completion-btn{
+        margin-top: 1rem;
+        font-size: 0.7rem;
       }
 
 </style>

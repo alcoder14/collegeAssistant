@@ -8,7 +8,7 @@
                 <div class="schedule-container">
                     <div class="management-row">
                         <div class="left-side">
-                            <h2 class="container-title" v-if="!editingScheduleName" style="margin-right: 0.5rem;">{{ scheduleName }}</h2>
+                            <h2 class="interface-title" v-if="!editingScheduleName" style="margin-right: 0.5rem;">{{ scheduleName }}</h2>
                             <button @click="toggleEditScheduleName" v-if="!editingScheduleName" class="transparent-btn"><font-awesome-icon icon="fa fa-pen" /></button>
 
                             <input type="text" v-model="scheduleName" v-if="editingScheduleName">
@@ -53,7 +53,7 @@
                 <div class="subjects-container">
                     <div class="management-row">
                         <div class="left-side">
-                            <h2 class="container-title">Subjects</h2>
+                            <h2 class="interface-title">Subjects</h2>
                             <button @click="toggleAddSubjectModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
                         </div>
                         <div class="right-side"></div>
