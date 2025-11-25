@@ -69,6 +69,20 @@ button{
     }
 }
 
+.spinner-btn{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 7px 11px;
+    width: 100%;
+    font-size: 20px;
+    background-color: $light;
+    p{
+        margin-left: 1rem;
+    }
+}
+
 // Modals
 
 .modal-container{
@@ -196,7 +210,7 @@ button{
             flex-direction: row;
             justify-content: end;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             color: $white;
             .text{
                 margin-right: 0.5rem;
@@ -275,6 +289,9 @@ button{
         .slogan-container > .check-option{
             font-size: 1.3rem;
         }
+        .slogan-container img{
+            height: 10vh;
+        }
     }
 }
 @media(max-width: 500px){
@@ -290,6 +307,23 @@ button{
             font-size: 1rem;
         }
     }
+    }
+}
+@media(max-width: 400px){
+    .form-page{
+        flex-direction: column;
+        .slogan-container h1 {
+            font-size: 2.1rem;
+        }
+        .slogan-container h3 {
+            font-size: 1.1rem;
+        }
+        .slogan-container > .check-option{
+            font-size: 1rem;
+        }
+        .slogan-container img{
+            height: 80px;
+        }
     }
 }
 

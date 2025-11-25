@@ -37,8 +37,8 @@
         display: flex;
         flex-direction: row;
         img{
-          height: 22vh;
-          width: 22vh;
+          height: 15vh;
+          width: auto;
           margin-right: 2vh;
         }
       }
