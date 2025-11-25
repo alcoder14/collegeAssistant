@@ -46,7 +46,6 @@ const handleSignup = async () => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;
-    
     await createSchedule(user.uid)
     
     router.push('/dashboard');

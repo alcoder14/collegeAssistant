@@ -1,79 +1,74 @@
 <template>
-    <HeaderDesktop />
-    <div class="flex-container">
-        <DesktopNavbar :selected="'ScheduleView'" />
-        <main class="view-blank">
-            <div class="view-container">
+    <div class="schedule-container" v-if="!loading">
+        <div class="management-row">
+            <div class="left-side">
+                <h2 class="interface-title" v-if="!editingScheduleName" style="margin-right: 0.5rem;">{{ scheduleName }}</h2>
+                <button @click="toggleEditScheduleName" v-if="!editingScheduleName" class="transparent-btn"><font-awesome-icon icon="fa fa-pen" /></button>
 
-                <div class="schedule-container">
-                    <div class="management-row">
-                        <div class="left-side">
-                            <h2 class="interface-title" v-if="!editingScheduleName" style="margin-right: 0.5rem;">{{ scheduleName }}</h2>
-                            <button @click="toggleEditScheduleName" v-if="!editingScheduleName" class="transparent-btn"><font-awesome-icon icon="fa fa-pen" /></button>
+                <input type="text" v-model="scheduleName" v-if="editingScheduleName">
 
-                            <input type="text" v-model="scheduleName" v-if="editingScheduleName">
+                <button v-if="editingScheduleName"><font-awesome-icon icon="fa fa-check" @click="changeScheduleName"/></button>
 
-                            <button v-if="editingScheduleName"><font-awesome-icon icon="fa fa-check" @click="changeScheduleName"/></button>
-
-                            <button v-if="editingScheduleName" @click="keepScheduleName"><font-awesome-icon icon="fa fa-times"/></button>
-                        </div>
-                        <div class="right-side">
-                          <label>Starting time: </label>
-                          <DropdownComponent :selectedOption="selectedStartHourOption" :options="startHourOptions" @onSelected="handleStartHourChange" v-if="schedule.length !== 0" />
-                        </div>
-                    </div>
-                    <div class="schedule">
-                        <div class="days-row">
-                            <div class="time-cell">TIME | DAY</div>
-                            <div class="day-cell">MON</div>
-                            <div class="day-cell">TUE</div>
-                            <div class="day-cell">WED</div>
-                            <div class="day-cell">THU</div>
-                            <div class="day-cell">FRI</div>
-                            <div class="day-cell">SAT</div>
-                            <div class="day-cell">SUN</div>
-                        </div>
-                        <div v-for="y in 14" :key="y" class="timetable-row">
-                            <div class="time-cell">
-                              {{ startingTimes[y-1] }}
-                            </div>
-                            <div
-                                v-for="x in 7"
-                                :key="x"
-                                class="timetable-cell"
-                                :style="{ backgroundColor: getCellColor(x-1, y-1) }"
-                                @click="openSelectSubjectModal(x-1, y-1)"
-                            >
-                                {{ getCellText(x-1, y-1) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="subjects-container">
-                    <div class="management-row">
-                        <div class="left-side">
-                            <h2 class="interface-title">Subjects</h2>
-                            <button @click="toggleAddSubjectModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
-                        </div>
-                        <div class="right-side"></div>
-                    </div>
-                    <div class="subjects">
-                        <div v-for="subject in subjects" :key="subject.id" class="subject" :style="{backgroundColor: subject.color}" >
-                            <div class="text">
-                                <h3> {{ subject.subjectShortName }} </h3>
-                                <h4>{{ subject.subjectName }} </h4>
-                                <h5> {{ subject.subjectTeacher }} </h5>
-                            </div>
-                            <div class="deleteSubjectBtn" @click="deleteSubject(subject.id)">
-                                <font-awesome-icon icon="fa fa-trash trash-icon"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                <button v-if="editingScheduleName" @click="keepScheduleName"><font-awesome-icon icon="fa fa-times"/></button>
             </div>
-        </main>
+            <div class="right-side">
+              <label>Starting time: </label>
+              <DropdownComponent :selectedOption="selectedStartHourOption" :options="startHourOptions" @onSelected="handleStartHourChange" v-if="schedule.length !== 0" />
+            </div>
+        </div>
+        <div class="schedule">
+            <div class="days-row">
+                <div class="time-cell">TIME | DAY</div>
+                <div class="day-cell">MON</div>
+                <div class="day-cell">TUE</div>
+                <div class="day-cell">WED</div>
+                <div class="day-cell">THU</div>
+                <div class="day-cell">FRI</div>
+                <div class="day-cell">SAT</div>
+                <div class="day-cell">SUN</div>
+            </div>
+            <div v-for="y in 14" :key="y" class="timetable-row">
+                <div class="time-cell">
+                  {{ startingTimes[y-1] }}
+                </div>
+                <div
+                    v-for="x in 7"
+                    :key="x"
+                    class="timetable-cell"
+                    :style="{ backgroundColor: getCellColor(x-1, y-1) }"
+                    @click="openSelectSubjectModal(x-1, y-1)"
+                >
+                    {{ getCellText(x-1, y-1) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="subjects-container" v-if="!loading">
+        <div class="management-row">
+            <div class="left-side">
+                <h2 class="interface-title">Subjects</h2>
+                <button @click="toggleAddSubjectModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
+            </div>
+            <div class="right-side"></div>
+        </div>
+        <div class="subjects">
+            <div v-for="subject in subjects" :key="subject.id" class="subject" :style="{backgroundColor: subject.color}" >
+                <div class="text">
+                    <h3> {{ subject.subjectShortName }} </h3>
+                    <h4>{{ subject.subjectName }} </h4>
+                    <h5> {{ subject.subjectTeacher }} </h5>
+                </div>
+                <div class="deleteSubjectBtn" @click="deleteSubject(subject.id)">
+                    <font-awesome-icon icon="fa fa-trash trash-icon"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="schedule-loader" v-if="loading">
+      <atom-spinner :animation-duration="1000" :size="100" color="#55DFD4"/>
+      <p style="margin-top: 1rem">Loading</p>
     </div>
     
 
@@ -85,11 +80,12 @@
 import { ref, onMounted } from 'vue';
 import { getUserSubjects, getUserSubjectPositions, saveSubjectPosition, deleteSubjectPosition, deleteSubjectAndTheirPositions, getUserSchedule, updateScheduleStartHour, updateScheduleName } from '@/composables/scheduleQueries';
 
-import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
-import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
+//import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
+//import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
 import AddSubjectModal from '@/components/Modals/AddSubjectModal.vue';
 import SelectSubjectModal from '@/components/Modals/SelectSubjectModal.vue';
 import DropdownComponent from '@/components/Elements/DropdownComponent.vue';
+import { AtomSpinner } from 'epic-spinners';
 
 
 const addSubjectModalVisible = ref(false);
@@ -97,18 +93,13 @@ const toggleAddSubjectModal = () => {
     addSubjectModalVisible.value = !addSubjectModalVisible.value;
 };
 
-/*
-const deleteSubjectModalVisible = ref(false);
-const toggleDeleteSubjectModal = () => {
-    deleteSubjectModalVisible.value = !deleteSubjectModalVisible.value
-}
-*/
+const loading = ref(true)
 
-/* --- Lifecycle: Load all subjects and positions --- */
 onMounted(async () => {
   await Promise.all([loadSubjects(), loadSubjectPositions()]);
   compileFilledCells();
   await loadSchedule()
+  loading.value = false
 });
 
 const schedule = ref([]);
@@ -319,6 +310,19 @@ const deleteSubject = async (id) => {
 
 <style lang="scss" scoped>
 @import "@/assets/style.scss";
+.schedule-loader{
+    width: 100%;
+    min-height: 83vh;
+    background-color: $darkest;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    p{
+        font-size: 2rem;
+        color: $white;
+    }
+}
 .schedule-container{
   width: 100%;
   background-color: $darkest;

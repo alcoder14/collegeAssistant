@@ -26,8 +26,8 @@ button{
     border: none;
     outline: none;
     cursor: pointer;
-    padding: 7px 11px;
-    font-size: 20px;
+    font-size: 16px;
+    padding: 5px 8px;
     transition: all 0.3s;
 }
 .transparent-btn{
@@ -35,12 +35,6 @@ button{
     color: $light;
     font-size: 1rem;
     padding: 0;
-}
-@media(max-height: 1000px){
-    button{
-        font-size: 16px;
-        padding: 5px 8px;
-    }
 }
 
 
@@ -336,22 +330,6 @@ button{
   }
 
 
-
-  // View Container - used on each page that can be accessed through navbar
-
-.flex-container{
-    display: flex;
-    flex-direction: row;
-}
-.view-blank{
-    background-color: $dark;
-    width: 85%;
-    min-height: 90vh;
-}
-.view-container{
-    padding: 2rem;
-}
-
 /* Schedule, Notes, Assignments, Tests, Subjects */
 .interface-title{
     margin-right: 1rem;
@@ -372,7 +350,7 @@ button{
         margin: 1rem;
         margin-top: 0;
         display: grid;
-        grid-template-columns: repeat(5, 19%);
+        grid-template-columns: repeat(4, 24%);
         justify-content: space-between;
     }
 
@@ -400,7 +378,7 @@ button{
                 .inner-box-container{
                         margin-top: 1rem;
                         display: grid;
-                        grid-template-columns: repeat(5, 19%);
+                        grid-template-columns: repeat(4, 24%);
                         justify-content: space-between;
                 }
             }
@@ -417,6 +395,35 @@ button{
         text-align: center;
         font-size: 2rem;
         color: $white;
+    }
+}
+
+@media(max-width: 1280px){
+    .interface{
+        .notes-container{
+            grid-template-columns: repeat(3, 32%);
+        }
+        .outer-container{
+            .inner-container{
+                .inner-box-container{
+                    grid-template-columns: repeat(3, 32%);
+                }
+            }
+        }
+    }
+}
+@media(max-width: 1000px){
+    .interface{
+        .notes-container{
+            grid-template-columns: repeat(2, 49%);
+        }
+        .outer-container{
+            .inner-container{
+                .inner-box-container{
+                    grid-template-columns: repeat(2, 49%);
+                }
+            }
+        }
     }
 }
 

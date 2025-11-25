@@ -1,52 +1,41 @@
 <template>
-    <HeaderDesktop />
-    <div class="flex-container">
-        <DesktopNavbar :selected="'NotesView'" />
-
-        <main class="view-blank">
-            <div class="view-container">
-
-                <div class="notes-interface interface">
-                    <div class="management-row">
-                        <div class="left-side">
-                            <h2 class="interface-title">Notes</h2>
-                            <button @click="toggleNoteModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
-                        </div>
-                        <div class="right-side">
-                            <DropdownComponent :options="subjectOptions" :selected-option="selectedSubject" @closed="toggleNoteModal" @onSelected="setNewSelected"/>
-                        </div>
-                    </div>
-
-                    <div class="notes-container" v-if="notesData.length > 0">
-                        <div class="note-card" v-for="(item, i) in filteredNotesData" :key="item.id" :style="{borderBottomColor: item.color}">
-                            <div class="left-side">
-                                <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.title }}</h3>
-                                <h4 :style="{color: item.color}">{{ item.date }} at {{ item.time }}</h4>
-                                <h4 style="margin-bottom: 0;">{{ item.subjectName }}</h4>
-                            </div>
-                            <div class="right-side">
-                                <button @click="setReviewNoteData(item)"><font-awesome-icon icon="fa fa-eye"/></button>
-                                <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(i, item.subjectID)" /></button>
-                                <button><font-awesome-icon icon="fa fa-trash" @click="removeNote(item.id)" /></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="placeholder" v-if="filteredNotesData.length === 0 && !loadingData">
-                        No Notes To Show
-                    </div>
-
-                    <div class="loader" v-if="loadingData">
-                        <atom-spinner :animation-duration="1000" :size="100" color="#55DFD4"/>
-                        <p style="margin-top: 1rem">Loading</p>
-                    </div>
-
-                </div>
-        
+    <div class="notes-interface interface">
+        <div class="management-row">
+            <div class="left-side">
+                <h2 class="interface-title">Notes</h2>
+                <button @click="toggleNoteModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
             </div>
-        </main>
+            <div class="right-side">
+                <DropdownComponent :options="subjectOptions" :selected-option="selectedSubject" @closed="toggleNoteModal" @onSelected="setNewSelected"/>
+            </div>
+        </div>
+
+        <div class="notes-container" v-if="notesData.length > 0">
+            <div class="note-card" v-for="(item, i) in filteredNotesData" :key="item.id" :style="{borderBottomColor: item.color}">
+                <div class="left-side">
+                    <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.title }}</h3>
+                    <h4 :style="{color: item.color}">{{ item.date }} at {{ item.time }}</h4>
+                    <h4 style="margin-bottom: 0;">{{ item.subjectName }}</h4>
+                </div>
+                <div class="right-side">
+                    <button @click="setReviewNoteData(item)"><font-awesome-icon icon="fa fa-eye"/></button>
+                    <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(i, item.subjectID)" /></button>
+                    <button><font-awesome-icon icon="fa fa-trash" @click="removeNote(item.id)" /></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="placeholder" v-if="filteredNotesData.length === 0 && !loadingData">
+            No Notes To Show
+        </div>
+
+        <div class="loader" v-if="loadingData">
+            <atom-spinner :animation-duration="1000" :size="100" color="#55DFD4"/>
+            <p style="margin-top: 1rem">Loading</p>
+        </div>
 
     </div>
+        
 
     <!-- Add Mode -->
     <NoteModal @closed="toggleNoteModal" @listUpdated="prepareData" v-if="noteModalVisible" :noteData="null"/>
@@ -59,8 +48,8 @@
 </template>
 
 <script setup>
-    import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
-    import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
+    //import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
+    //import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
     import DropdownComponent from '@/components/Elements/DropdownComponent.vue';
     import { ref, onMounted } from "vue"
 

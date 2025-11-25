@@ -1,128 +1,117 @@
 <template>
-    <HeaderDesktop />
-    <div class="flex-container">
-        <DesktopNavbar :selected="'ExamsView'" />
+    <div class="exams-interface interface">
+        <div class="management-row">
+            <div class="left-side">
+                <h2 class="interface-title">Tests</h2>
+                <button @click="toggleExamModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
+            </div>
+            <div class="right-side">
+                <DropdownComponent :options="typeOptions" :selected-option="selectedType" @closed="toggleExamModal" @onSelected="setNewSelected"/>
+            </div>
+        </div>
 
-        <main class="view-blank">
-            <div class="view-container">
+        <div class="outer-container" v-if="examsData.length > 0 ">
 
-                <div class="exams-interface interface">
-                    <div class="management-row">
+            <div class="inner-container" v-if="todayExams.length > 0">
+
+                <div class="top-row">
+                    <h1>Today</h1>
+                    <div class="line"></div>
+                </div>
+
+                <div class="inner-box-container">
+                    <div class="exam-card" v-for="(item) in todayExams" :key="item.id" :style="{borderBottomColor: item.color}">
+
                         <div class="left-side">
-                            <h2 class="interface-title">Tests</h2>
-                            <button @click="toggleExamModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
+                            <h3 :style="{color: item.color}"> {{ item.date }}</h3>
+                            <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
+                            <h4>{{ item.subjectName }}</h4>
+                            <h5>{{ item.description }}</h5>
                         </div>
+
                         <div class="right-side">
-                            <DropdownComponent :options="typeOptions" :selected-option="selectedType" @closed="toggleExamModal" @onSelected="setNewSelected"/>
-                        </div>
-                    </div>
-
-                    <div class="outer-container" v-if="examsData.length > 0 ">
-
-                        <div class="inner-container" v-if="todayExams.length > 0">
-
-                            <div class="top-row">
-                                <h1>Today</h1>
-                                <div class="line"></div>
-                            </div>
-
-                            <div class="inner-box-container">
-                                <div class="exam-card" v-for="(item) in todayExams" :key="item.id" :style="{borderBottomColor: item.color}">
-
-                                    <div class="left-side">
-                                        <h3 :style="{color: item.color}"> {{ item.date }}</h3>
-                                        <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
-                                        <h4>{{ item.subjectName }}</h4>
-                                        <h5>{{ item.description }}</h5>
-                                    </div>
-
-                                    <div class="right-side">
-                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID, item.type)" /></button>
-                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
-                                    </div>
-
-                                </div>
-                            </div>
-
+                            <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID, item.type)" /></button>
+                            <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
                         </div>
 
-                        <div class="inner-container" v-if="futureExams.length > 0">
-                            <div class="top-row">
-                                <h1>Upcoming</h1>
-                                <div class="line"></div>
-                            </div>
+                    </div>
+                </div>
 
-                            <div class="inner-box-container">
-                                <div class="exam-card" v-for="(item) in futureExams" :key="item.id" :style="{borderBottomColor: item.color}">
+            </div>
 
-                                    <div class="left-side">
-                                        <h3 :style="{color: item.color}"> {{ item.date }}</h3>
-                                        <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
-                                        <h4>{{ item.subjectName }}</h4>
-                                        <h5>{{ item.description }}</h5>
-                                    </div>
+            <div class="inner-container" v-if="futureExams.length > 0">
+                <div class="top-row">
+                    <h1>Upcoming</h1>
+                    <div class="line"></div>
+                </div>
 
-                                    <div class="right-side">
-                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID, item.type)" /></button>
-                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
-                                    </div>
+                <div class="inner-box-container">
+                    <div class="exam-card" v-for="(item) in futureExams" :key="item.id" :style="{borderBottomColor: item.color}">
 
-                                </div>
-                            </div>
+                        <div class="left-side">
+                            <h3 :style="{color: item.color}"> {{ item.date }}</h3>
+                            <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
+                            <h4>{{ item.subjectName }}</h4>
+                            <h5>{{ item.description }}</h5>
                         </div>
 
-                        <div class="inner-container" v-if="pastExams.length > 0">
-                            <div class="top-row">
-                                <h1>Past</h1>
-                                <div class="line"></div>
-                            </div>
+                        <div class="right-side">
+                            <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID, item.type)" /></button>
+                            <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
+                        </div>
 
-                            <div class="inner-box-container">
-                                <div class="exam-card" v-for="(item) in pastExams" :key="item.id" :style="{borderBottomColor: item.color}">
-
-                                    <div class="left-side">
-                                        <h3 :style="{color: item.color}"> {{ item.date }}</h3>
-                                        <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
-                                        <h4>{{ item.subjectName }}</h4>
-                                        <h5>{{ item.description }}</h5>
-                                        <div class="result-options" v-if="item.result === null">
-                                            <button class="result-btn" style="margin-right: 0.2rem;" @click="updateResult(item.id, 'success')"><font-awesome-icon icon="fa fa-check"/> Passed</button>
-                                            <button class="result-btn" @click="updateResult(item.id, 'failure')"><font-awesome-icon icon="fa fa-xmark"/> Failed</button>
-                                        </div>
-                                        <div class="result-message" v-if="item.result === 'success'">
-                                            <p><font-awesome-icon icon="fa fa-check"/> Passed</p>
-                                            <button class="result-btn" @click="updateResult(item.id, null)">Undo</button>
-                                        </div>
-                                        <div class="result-message" v-if="item.result === 'failure'">
-                                            <p><font-awesome-icon icon="fa fa-xmark"/> Failed</p>
-                                            <button class="result-btn" @click="updateResult(item.id, null)">Undo</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="right-side">
-                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID, item.type)" /></button>
-                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div> 
-
-
-                    </div>      
-                    
-                    <div class="placeholder" v-if="futureExams.length == 0 && todayExams.length == 0 && pastExams.length === 0 && !loadingData">
-                        No Tests To Show
                     </div>
-
-                    <div class="loader" v-if="loadingData">
-                        <atom-spinner :animation-duration="1000" :size="100" color="#55DFD4"/>
-                        <p style="margin-top: 1rem">Loading</p>
-                    </div>
-                    
                 </div>
             </div>
-        </main>
+
+            <div class="inner-container" v-if="pastExams.length > 0">
+                <div class="top-row">
+                    <h1>Past</h1>
+                    <div class="line"></div>
+                </div>
+
+                <div class="inner-box-container">
+                    <div class="exam-card" v-for="(item) in pastExams" :key="item.id" :style="{borderBottomColor: item.color}">
+
+                        <div class="left-side">
+                            <h3 :style="{color: item.color}"> {{ item.date }}</h3>
+                            <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
+                            <h4>{{ item.subjectName }}</h4>
+                            <h5>{{ item.description }}</h5>
+                            <div class="result-options" v-if="item.result === null">
+                                <button class="result-btn" style="margin-right: 0.2rem;" @click="updateResult(item.id, 'success')"><font-awesome-icon icon="fa fa-check"/> Passed</button>
+                                <button class="result-btn" @click="updateResult(item.id, 'failure')"><font-awesome-icon icon="fa fa-xmark"/> Failed</button>
+                            </div>
+                            <div class="result-message" v-if="item.result === 'success'">
+                                <p><font-awesome-icon icon="fa fa-check"/> Passed</p>
+                                <button class="result-btn" @click="updateResult(item.id, null)">Undo</button>
+                            </div>
+                            <div class="result-message" v-if="item.result === 'failure'">
+                                <p><font-awesome-icon icon="fa fa-xmark"/> Failed</p>
+                                <button class="result-btn" @click="updateResult(item.id, null)">Undo</button>
+                            </div>
+                        </div>
+
+                        <div class="right-side">
+                            <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID, item.type)" /></button>
+                            <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div> 
+
+        </div>      
+        
+        <div class="placeholder" v-if="futureExams.length == 0 && todayExams.length == 0 && pastExams.length === 0 && !loadingData">
+            No Tests To Show
+        </div>
+
+        <div class="loader" v-if="loadingData">
+            <atom-spinner :animation-duration="1000" :size="100" color="#55DFD4"/>
+            <p style="margin-top: 1rem">Loading</p>
+        </div>
+
 
     </div>
 
@@ -135,8 +124,8 @@
 </template>
 
 <script setup>
-    import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
-    import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
+    //import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
+    //import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
     import DropdownComponent from '@/components/Elements/DropdownComponent.vue';
     import ExamModal from '@/components/Modals/ExamModal.vue';
     import { ref, onMounted } from "vue"

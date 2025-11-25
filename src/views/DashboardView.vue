@@ -1,116 +1,121 @@
 <template>
-    <HeaderDesktop />
-    <div class="flex-container">
-        <DesktopNavbar :selected="'DashboardView'" />
-        <main class="view-blank">
-            <div class="view-container">
-                <div class="dashboard-container" v-if="!loading">
+    
+    <div class="dashboard-container" v-if="!loading">
 
-                    <div class="today-schedule">
-                        <div class="box-title"><h2>TODAY</h2></div>
+        <div class="today-schedule">
+            <div class="box-title"><h2>TODAY</h2></div>
 
-                        <div class="box-content" v-if="todaysLectures.length > 0">
-                            <h1 class="today">{{ dayWord }}, {{ date }}</h1>
+            <div class="box-content" v-if="todaysLectures.length > 0">
+                <h1 class="today">{{ dayWord }}, {{ date }}</h1>
 
-                            <div class="lecture-container" v-for="lecture in todaysLectures" :key="lecture.id">
+                <div class="lecture-container" v-for="lecture in todaysLectures" :key="lecture.id">
 
-                                <div class="top-row" :class="{'current-lecture': lecture.currentStatus === 'in progress'}">
-                                    <div class="status-icon">
-                                        <font-awesome-icon icon="fa fa-check" v-if="lecture.currentStatus === 'completed'" />
-                                        <font-awesome-icon icon="fa fa-clock" v-if="lecture.currentStatus === 'in progress'" class="clock-icon" />
-                                        <font-awesome-icon icon="fa fa-table-cells-large" v-if="lecture.currentStatus === 'upcoming'" />
-                                    </div>
-                                    <div class="time">{{ lecture.startHour }}</div>
-                                    <div class="subject-name">{{ lecture.subjectName }}</div>
-                                </div>
-                                <div class="bottom-row" v-if="lecture.currentStatus ==='in progress'">
-                                    <div class="progress-bar">
-                                        <div class="progress" :style="{width: progression + '%'}"></div>
-                                    </div>
-                                </div>
-
-                            </div>
-
+                    <div class="top-row" :class="{'current-lecture': lecture.currentStatus === 'in progress'}">
+                        <div class="status-icon">
+                            <font-awesome-icon icon="fa fa-check" v-if="lecture.currentStatus === 'completed'" />
+                            <font-awesome-icon icon="fa fa-clock" v-if="lecture.currentStatus === 'in progress'" class="clock-icon" />
+                            <font-awesome-icon icon="fa fa-table-cells-large" v-if="lecture.currentStatus === 'upcoming'" />
                         </div>
-
-                        <div class="placeholder" v-else>
-                            <p>No Lectures Today</p>
-                        </div>
+                        <div class="time">{{ lecture.startHour }}</div>
+                        <div class="subject-name">{{ lecture.subjectName }}</div>
                     </div>
-
-                    <div class="data-box">
-                        <div class="box-title">
-                            <h2>LAST NOTE</h2>
-                            <router-link to="/notes"><button> Manage </button></router-link>
-                        </div>
-                        <div class="box-content" v-if="notes.length > 0">
-                            <div class="content-subject">
-                                <span class="content-subject-text" :style="{backgroundColor: lastNote.color}">{{ lastNote.subjectName }}</span>
-                            </div>
-                            <h2 class="content-title">{{ lastNote.title }}</h2>
-                            <h4 class="content-date">{{ lastNote.date }} at {{ lastNote.time }}</h4>
-                            <div v-html="lastNote.content" class="content-content"></div>
-                        </div>
-                        <div class="placeholder" v-else>
-                            <p>No Notes To Show</p>
-                        </div>
-                    </div>
-                    <div class="data-box">
-                        <div class="box-title">
-                            <h2>NEXT ASSIGNMENT</h2>
-                            <router-link to="/assignments"><button> Manage </button></router-link>
-                        </div>
-                        <div class="box-content" v-if="assignments.length > 0">
-                            <div class="content-subject">
-                                <span class="content-subject-text" :style="{backgroundColor: nextAssignment.color}">{{ nextAssignment.subjectName }}</span>
-                            </div>
-                            <h2 class="content-title"> Due: {{ nextAssignment.date }}</h2>
-                            <h4 class="content-date">{{ nextAssignment.title }}</h4>
-                            <div v-html="nextAssignment.description" class="content-content"></div>
-                        </div>
-                        <div class="placeholder" v-else>
-                            <p>No Upcoming Assignments</p>
-                        </div>
-                    </div>
-                    <div class="data-box">
-                        <div class="box-title">
-                            <h2>NEXT TEST</h2>
-                            <router-link to="/tests"><button> Manage </button></router-link>
-                        </div>
-                        <div class="box-content" v-if="tests.length > 0">
-                            <div class="content-subject">
-                                <span class="content-subject-text" :style="{backgroundColor: nextTest.color}">{{ nextTest.subjectName }}</span>
-                            </div>
-                            <h2 class="content-title">{{ nextTest.date }}</h2>
-                            <h4 class="content-date">{{ nextTest.title }}</h4>
-                            <h4 class="content-date">{{ nextTest.type }}</h4>
-                        </div>
-                        <div class="placeholder" v-else>
-                            <p>No Upcoming Tests</p>
+                    <div class="bottom-row" v-if="lecture.currentStatus ==='in progress'">
+                        <div class="progress-bar">
+                            <div class="progress" :style="{width: progression + '%'}"></div>
                         </div>
                     </div>
 
                 </div>
+
             </div>
-        </main>
+
+            <div class="placeholder" v-else>
+                <p>No Lectures Today</p>
+            </div>
+
+        </div>
+
+        <div class="data-box-container">    
+            <div class="data-box">
+                <div class="box-title">
+                    <h2>LAST NOTE</h2>
+                    <router-link to="/notes"><button> Manage </button></router-link>
+                </div>
+                <div class="box-content" v-if="notes.length > 0">
+                    <div class="content-subject">
+                        <p class="content-subject-text" :style="{backgroundColor: lastNote.color}">{{ lastNote.subjectName }}</p>
+                    </div>
+                    <h2 class="content-bold">{{ lastNote.title }}</h2>
+                    <h4 class="content-light">{{ lastNote.date }} at {{ lastNote.time }}</h4>
+                    <div v-html="lastNote.content" v-if="lastNote.content.trim() !== ''" class="content-content"></div>
+                </div>
+                <div class="placeholder" v-else>
+                    <p>No Notes To Show</p>
+                </div>
+            </div>
+            <div class="data-box">
+                <div class="box-title">
+                    <h2>NEXT ASSIGNMENT</h2>
+                    <router-link to="/assignments"><button> Manage </button></router-link>
+                </div>
+                <div class="box-content" v-if="assignments.length > 0">
+                    <div class="content-subject">
+                        <p class="content-subject-text" :style="{backgroundColor: nextAssignment.color}">{{ nextAssignment.subjectName }}</p>
+                    </div>
+                    <h2 class="content-bold"> Due: {{ nextAssignment.date }}</h2>
+                    <h4 class="content-light">{{ nextAssignment.title }}</h4>
+                    <div v-html="nextAssignment.description" v-if="nextAssignment.description.trim() !== ''" class="content-content"></div>
+                </div>
+                <div class="placeholder" v-else>
+                    <p>No Upcoming Assignments</p>
+                </div>
+            </div>
+            <div class="data-box">
+                <div class="box-title">
+                    <h2>NEXT TEST</h2>
+                    <router-link to="/tests"><button> Manage </button></router-link>
+                </div>
+                <div class="box-content" v-if="tests.length > 0">
+                    <div class="content-subject">
+                        <p class="content-subject-text" :style="{backgroundColor: nextTest.color}">{{ nextTest.subjectName }}</p>
+                    </div>
+                    <h2 class="content-bold">{{ nextTest.date }}</h2>
+                    <h4 class="content-light">{{ nextTest.type }}</h4>
+                </div>
+                <div class="placeholder" v-else>
+                    <p>No Upcoming Tests</p>
+                </div>
+            </div>
+        </div>
+
+
     </div>
+
+    <div class="dashboard-loader" v-else>
+        <atom-spinner :animation-duration="1000" :size="100" color="#55DFD4"/>
+        <p style="margin-top: 1rem">Loading</p>
+    </div>
+           
 </template>
 
 <script setup>
-    import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
-    import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
+    //import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
+    //import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
     import { getUserSchedule, getUserSubjectPositions, getUserSubjects } from '@/composables/scheduleQueries';
     import { getUserNotes } from '@/composables/noteQueries';
     import { getUserExams } from '@/composables/examQueries';
     import { getUserAssignments } from '@/composables/assignmentQueries';
+    import { AtomSpinner } from 'epic-spinners';
+
     import { onMounted, ref } from 'vue';
+    import { compareDateToToday } from '@/composables/general';
 
     const loading = ref(true)
 
     onMounted( async () => {
-        getTime()
-        getToday()
-        getScheduleData()
+        getTime() // get current time
+        getToday() // get current day - numeric and string values
+        getScheduleData() // get starting time for user's schedule
         
         await getTodaysPositions()
 
@@ -126,26 +131,20 @@
         startHour.value = scheduleData.value[0].startHour
     }
 
-    //const currentTime = ref()
     const hours = ref()
     const minutes = ref()
     const progression = ref()
 
     const getTime = () => {
         const now = new Date();
-
         hours.value = now.getHours()
         minutes.value = now.getMinutes()
         progression.value = minutes.value / 60 * 100
-        console.log("Progression: " + progression.value)
-
-        //currentTime.value = hours + ":" + minutes
     }
 
     const dayNumber = ref()
     const dayWord = ref()
     const date = ref()
-
 
     const getToday = () => {
 
@@ -159,14 +158,6 @@
         dayWord.value = days[now.getDay() - 1];
         date.value = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
         dayNumber.value = now.getDay() === 0 ? 6 : now.getDay() - 1;
-
-        console.log(dayWord.value)
-        console.log(date.value)
-        console.log(dayNumber.value)
-
-        const today = new Date();
-        const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ... 6 = Saturday
-        console.log(dayOfWeek);
     }
 
     const subjectPositions = ref()
@@ -262,7 +253,10 @@
     const assignments = ref()
     const nextAssignment = ref()
     const loadAssignments = async () => {
+
         assignments.value = await getUserAssignments()
+        assignments.value = assignments.value.filter((assignment) => assignment.completion === false && compareDateToToday(assignment.date) !== "past")
+
         assignments.value = assignments.value.sort((a, b) => {
             const [da, ma, ya] = a.date.split('. ').map(Number);
             const [db, mb, yb] = b.date.split('. ').map(Number);
@@ -270,15 +264,9 @@
             return new Date(ya, ma - 1, da) - new Date(yb, mb - 1, db);
         });
 
-        console.log("ASSIGNMENTS: ")
-        console.log(assignments.value)
-
         if(assignments.value.length > 0){
-            console.log("Here:")
-            console.log(assignments.value)
+
             nextAssignment.value = assignments.value[0]
-            console.log("Next Assignment: ")
-            console.log(nextAssignment.value)
 
             nextAssignment.value = {
                 ...nextAssignment.value,
@@ -292,7 +280,10 @@
     const tests = ref()
     const nextTest = ref()
     const loadTests = async () => {
+
         tests.value = await getUserExams()
+        tests.value = tests.value.filter((test) => compareDateToToday(test.date) !== "past")
+
         tests.value = tests.value.sort((a, b) => {
             const [da, ma, ya] = a.date.split('. ').map(Number);
             const [db, mb, yb] = b.date.split('. ').map(Number);
@@ -338,23 +329,37 @@
 
 <style lang="scss" scoped>
       @import "@/assets/style.scss";
+      .dashboard-loader{
+        width: 100%;
+        min-height: 83vh;
+        background-color: $darkest;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        p{
+            font-size: 2rem;
+            color: $white;
+        }
+      }
       .dashboard-container{
         width: 100%;
         min-height: 83vh;
         background-color: $dark;
-        display: grid;
-        grid-template-rows: 36% 36% 24%;
-        grid-template-columns: 49.5% 49.5%;
-        gap: 1%;
-        row-gap: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
       }
-      .today-schedule{
-        grid-row: 1 / span 3;
+      .today-schedule, .data-box-container{
+        width: 49.5%;
       }
       .today-schedule, .data-box{
         background-color: $darkest;
         display: flex;
         flex-direction: column;
+      }
+      .data-box{
+        margin-bottom: 1rem;
       }
       .box-title{
         background-color: $light;
@@ -363,22 +368,26 @@
         justify-content: space-between;
       }
       .box-content{
-        padding: 0.8rem;
+        padding: 1rem;
         color: $white;
         .content-subject{
-            margin: 0.5rem 0;
+            display: inline-block;
+            margin-bottom: 0.4rem;
             .content-subject-text{
                 padding: 0.4rem;
             }
         }
-        .content-title{
+        .content-bold{
             font-weight: 600;
             text-transform: capitalize;
             margin-bottom: 0.2rem;
         }
-        .content-date{
+        .content-light{
             font-weight: 300;
-            margin-bottom: 0.6rem;
+            text-transform: capitalize;
+        }
+        .content-content{
+            margin-top: 0.6rem;
         }
       }
       .placeholder{
