@@ -111,7 +111,6 @@ button{
     .modal-container .modal-window{
         width: 100%;
         min-width: 100%;
-        min-height: 100vh;
     }
 }
 .modal-title{
@@ -332,7 +331,13 @@ button{
 
 /* Schedule, Notes, Assignments, Tests, Subjects */
 .interface-title{
-    margin-right: 1rem;
+    margin-right: 0.2rem;
+}
+.interface-add-btn{
+    padding: 0.4rem;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: $light;
 }
 
 .interface{
@@ -355,6 +360,22 @@ button{
     }
 
     /* Assignments, Tests */
+
+    .mobile-navigator{
+        padding: 0 1rem;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 33.33%);
+        button{
+            background-color: $dark;
+            color: $light;
+            font-size: 0.9rem;
+        }
+        .selected-btn{
+            background-color: $light;
+            color: $darkest;
+        }
+    }
 
     .outer-container{
             display: flex;
@@ -426,6 +447,23 @@ button{
         }
     }
 }
+@media(max-width: 665px){
+    .interface{
+        .notes-container{
+            grid-template-columns: repeat(1, 100%);
+        }
+        .outer-container{
+            .inner-container{
+                .top-row{
+                    display: none;
+                }
+                .inner-box-container{
+                    grid-template-columns: repeat(1, 100%);
+                }
+            }
+        }
+    }
+}
 
 /* Notes, Assignments, Tests, Schedule */
 
@@ -437,6 +475,7 @@ button{
   .left-side, .right-side{
       display: flex;
       flex-direction: row;
+      align-items: center;
   }
   .right-side{
       align-items: center;
@@ -444,4 +483,9 @@ button{
         margin-right: 10px;
       }
   }
+}
+
+.right-side > button{
+    background-color: transparent;
+    color: $light;
 }

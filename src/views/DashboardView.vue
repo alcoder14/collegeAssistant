@@ -149,15 +149,19 @@
     const getToday = () => {
 
         const now = new Date();
-        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",];
         const months = [
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         ];
 
-        dayWord.value = days[now.getDay() - 1];
+        dayWord.value = days[now.getDay()];
         date.value = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-        dayNumber.value = now.getDay() === 0 ? 6 : now.getDay() - 1;
+        dayNumber.value = now.getDay() === 0 ? 6 : now.getDay();
+
+        console.log(dayWord.value)
+        console.log("Day word:" + now.getDay())
+        console.log("Day number: " + dayNumber.value)
     }
 
     const subjectPositions = ref()
@@ -398,6 +402,7 @@
            text-align: center; 
            font-size: 1.4rem;
            color: $white;
+           padding: 4rem;
       }
       .today{
         color: $white;
@@ -439,6 +444,25 @@
                     background-color: $light;
                 }
             }
+        }
+      }
+
+      @media(max-width: 900px){
+        .dashboard-container{
+            flex-direction: column;
+            justify-content: start;
+        }
+        .today-schedule, .data-box-container{
+            width: 100%;
+        }
+        .today-schedule{
+            margin-bottom: 1.5rem;
+        }
+      }
+
+      @media(max-width: 550px){
+        .current-lecture{
+            font-size: 1.5rem;
         }
       }
 </style>

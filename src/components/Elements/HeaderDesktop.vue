@@ -4,14 +4,25 @@
         <img src="@/assets/CollegeAssistantLogo.png">
         <h1>COLLEGE ASSISTANT</h1>
       </div>
-        <div class="weather-container" v-if="weather != null">
-          <h3 class="weather-data">Temperature: {{ weather.current_weather.temperature }} °C</h3>
-        </div>
+      <div class="weather-container" v-if="weather != null && !visibleBars">
+        <h3 class="weather-data">Temperature: {{ weather.current_weather.temperature }} °C</h3>
+      </div>
+      <font-awesome-icon icon="fa fa-bars" class="bars toggle-btn" v-if="visibleBars && !visibleMobileNavbar" @click="toggleMobileNavbar" />
+      <font-awesome-icon icon="fa fa-xmark" class="xmark toggle-btn" @click="toggleMobileNavbar" v-if="visibleBars && visibleMobileNavbar" />
     </header>
+
+    <div class="mobile-navbar" v-if="visibleMobileNavbar">
+      <router-link to="/dashboard" class="link" @click="toggleMobileNavbar">Dashboard</router-link>
+      <router-link to="/schedule" class="link" @click="toggleMobileNavbar">Schedule</router-link>
+      <router-link to="/tests" class="link" @click="toggleMobileNavbar">Tests</router-link>
+      <router-link to="/assignments" class="link" @click="toggleMobileNavbar">Assignments</router-link>
+      <router-link to="/notes" class="link" @click="toggleMobileNavbar">Notes</router-link>
+    </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+
 const lat = ref(null)
 const lon = ref(null)
 const weather = ref(null)
@@ -49,13 +60,58 @@ const getLocationAndWeather = () => {
   )
 }
 
-onMounted(() => {
-  getLocationAndWeather()
-})
+
+let visibleBars = ref(null)
+const visibleMobileNavbar = ref(false)
+
+  const checkWidth = () => {
+    if(window.innerWidth > 1650){
+      visibleBars.value = false
+      visibleMobileNavbar.value = false
+    } else {
+      visibleBars.value = true
+    }
+  }
+
+  const toggleMobileNavbar = () => {
+    visibleMobileNavbar.value = !visibleMobileNavbar.value
+  }
+
+  onMounted(() => {
+    checkWidth()
+    window.addEventListener("resize", checkWidth)
+
+    getLocationAndWeather()
+  })
+
 </script>
 
   <style lang="scss" scoped>
       @import "@/assets/style.scss";
+      .mobile-navbar{
+        z-index: 50;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 50%;
+        height: 100vh;
+        background-color: $dark;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+        font-size: 1.6rem;
+        color: $white;
+        padding: 1rem;
+        .link, .toggle-btn{
+          color: $white;
+          text-decoration: none;
+          margin-bottom: 0.6rem;
+        }
+        .toggle-btn{
+          cursor: pointer;
+        }
+      }
       header{
         width: 100%;
         height: 10vh;
@@ -86,5 +142,23 @@ onMounted(() => {
         height: 5vh;
         width: 5vh;
         margin-right: 1rem;
+      }
+      .bars, .xmark{
+        font-size: 2rem;
+        color: $white;
+        cursor: pointer;
+      }
+
+      @media(max-width: 1000px){
+        header{
+          height: 7vh;
+        }
+        img{
+          height: 3vh;
+          width: 3vh;
+        }
+        h1, .bars{
+          font-size: 1.5rem;
+        }
       }
   </style>

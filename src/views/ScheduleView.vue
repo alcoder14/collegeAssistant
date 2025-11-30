@@ -18,7 +18,7 @@
         </div>
         <div class="schedule">
             <div class="days-row">
-                <div class="time-cell">TIME | DAY</div>
+                <div class="time-cell"></div>
                 <div class="day-cell">MON</div>
                 <div class="day-cell">TUE</div>
                 <div class="day-cell">WED</div>
@@ -48,7 +48,7 @@
         <div class="management-row">
             <div class="left-side">
                 <h2 class="interface-title">Subjects</h2>
-                <button @click="toggleAddSubjectModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
+                <font-awesome-icon icon="fa fa-plus" @click="toggleAddSubjectModal" class="interface-add-btn" />
             </div>
             <div class="right-side"></div>
         </div>
@@ -333,16 +333,17 @@ const deleteSubject = async (id) => {
 .subjects-container{
   width: 100%;
   background-color: $darkest;
-  min-height: 16vh;
+  height: fit-content;
   user-select: none;
   .subjects{
-      padding-left: 1rem;
+      padding: 1rem;
       display: grid;
-      grid-template-columns: repeat(8, auto);
-      gap: 20px;
+      grid-template-columns: repeat(6, 16%);
+      justify-content: space-between;
       .subject{
           display: flex;
           flex-direction: row;
+          row-gap: 1rem;
           .text{
               width: 70%;
               display: flex;

@@ -58,7 +58,7 @@
       padding: 2rem;
   }
 
-  @media(max-width: 1650px){
+  @media(max-width: 1651px){
     .content{
         width: 100%;
     }
@@ -66,6 +66,7 @@
   @media(max-width: 1000px){
     .content{
       padding: 1rem;
+      min-height: 93vh;
   }
 }
 </style>

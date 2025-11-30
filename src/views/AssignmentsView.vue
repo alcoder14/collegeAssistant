@@ -3,16 +3,23 @@
         <div class="management-row">
             <div class="left-side">
                 <h2 class="interface-title">Assignments</h2>
-                <button @click="toggleAssignmentModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
+                <font-awesome-icon icon="fa fa-plus" @click="toggleAssignmentModal" class="interface-add-btn" />
+
             </div>
             <div class="right-side">
                 <DropdownComponent :options="subjectOptions" :selected-option="selectedSubject" @closed="toggleAssignmentModal" @onSelected="setNewSelected"/>
             </div>
         </div>
 
+        <div class="mobile-navigator" v-if="mobileNavigatorVisible">
+            <button @click="toggleVisibleCards('due')" :class="{'selected-btn': visibleCardType === 'due'}">Due</button>
+            <button @click="toggleVisibleCards('past-due')" :class="{'selected-btn': visibleCardType === 'past-due'}">Past Due</button>
+            <button @click="toggleVisibleCards('completed')" :class="{'selected-btn': visibleCardType === 'completed'}">Completed</button>
+        </div>
+
         <div class="outer-container" v-if="assignmentsData.length > 0">
 
-            <div class="inner-container" v-if="dueAssignments.length > 0">
+            <div class="inner-container" v-if="dueAssignments.length > 0 && (visibleCardType === 'due' || visibleCardType === 'all')">
 
                 <div class="top-row">
                     <h1>Due</h1>
@@ -36,7 +43,7 @@
                 </div>
             </div>
 
-            <div class="inner-container" v-if="pastDueAssignments.length > 0">
+            <div class="inner-container" v-if="pastDueAssignments.length > 0 && (visibleCardType === 'past-due' || visibleCardType === 'all')">
 
                 <div class="top-row">
                     <h1><font-awesome-icon icon="fa fa-exclamation-circle" /> Past Due</h1>
@@ -59,7 +66,7 @@
                 </div>
             </div>
 
-            <div class="inner-container" v-if="completedAssignments.length > 0">
+            <div class="inner-container" v-if="completedAssignments.length > 0 && (visibleCardType === 'completed' || visibleCardType === 'all')">
 
                 <div class="top-row">
                     <h1><font-awesome-icon icon="fa fa-check" /> Completed</h1>
@@ -138,6 +145,9 @@
     }
 
     onMounted( () => {
+        checkWidth()
+        window.addEventListener("resize", checkWidth)
+
         prepareData()
     })
 
@@ -260,6 +270,26 @@
         let assignmentToUpdate = assignmentsData.value.find((assignment) => assignment.id === id)
 
         await updateAssignmentCompletion(id, assignmentToUpdate)
+    }
+
+
+    const mobileNavigatorVisible = ref(false)
+    const visibleCardType = ref(null)
+
+    const checkWidth = () => {
+        if(window.innerWidth < 665){
+        mobileNavigatorVisible.value = true
+        if(visibleCardType.value === null || visibleCardType.value === "all"){
+            visibleCardType.value = "due"
+        }
+        } else {
+            mobileNavigatorVisible.value = false
+            visibleCardType.value = "all"
+        }
+    }
+
+    const toggleVisibleCards = (cardType) => {
+        visibleCardType.value = cardType
     }
 
 </script>

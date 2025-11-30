@@ -3,16 +3,22 @@
         <div class="management-row">
             <div class="left-side">
                 <h2 class="interface-title">Tests</h2>
-                <button @click="toggleExamModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
+                <font-awesome-icon icon="fa fa-plus" @click="toggleExamModal" class="interface-add-btn" />
             </div>
             <div class="right-side">
                 <DropdownComponent :options="typeOptions" :selected-option="selectedType" @closed="toggleExamModal" @onSelected="setNewSelected"/>
             </div>
         </div>
 
+        <div class="mobile-navigator" v-if="mobileNavigatorVisible">
+            <button @click="toggleVisibleCards('today')" :class="{'selected-btn': visibleCardType === 'today'}">Today</button>
+            <button @click="toggleVisibleCards('upcoming')" :class="{'selected-btn': visibleCardType === 'upcoming'}">Upcoming</button>
+            <button @click="toggleVisibleCards('past')" :class="{'selected-btn': visibleCardType === 'past'}">Past</button>
+        </div>
+
         <div class="outer-container" v-if="examsData.length > 0 ">
 
-            <div class="inner-container" v-if="todayExams.length > 0">
+            <div class="inner-container" v-if="todayExams.length > 0 && (visibleCardType === 'today' || visibleCardType === 'all')">
 
                 <div class="top-row">
                     <h1>Today</h1>
@@ -39,7 +45,7 @@
 
             </div>
 
-            <div class="inner-container" v-if="futureExams.length > 0">
+            <div class="inner-container" v-if="futureExams.length > 0 && (visibleCardType === 'upcoming' || visibleCardType === 'all')">
                 <div class="top-row">
                     <h1>Upcoming</h1>
                     <div class="line"></div>
@@ -64,7 +70,7 @@
                 </div>
             </div>
 
-            <div class="inner-container" v-if="pastExams.length > 0">
+            <div class="inner-container" v-if="pastExams.length > 0 && (visibleCardType === 'past' || visibleCardType === 'all')">
                 <div class="top-row">
                     <h1>Past</h1>
                     <div class="line"></div>
@@ -176,6 +182,9 @@
     const selectedType = ref("all")
 
     onMounted( () => {
+        checkWidth()
+        window.addEventListener("resize", checkWidth)
+
         prepareData()
     })
 
@@ -287,6 +296,25 @@
         await updateExamResult(id, examToUpdate)
     }
 
+    
+    const mobileNavigatorVisible = ref(false)
+    const visibleCardType = ref(null)
+
+    const checkWidth = () => {
+        if(window.innerWidth < 665){
+        mobileNavigatorVisible.value = true
+        if(visibleCardType.value === null || visibleCardType.value === "all"){
+            visibleCardType.value = "today"
+        }
+        } else {
+            mobileNavigatorVisible.value = false
+            visibleCardType.value = "all"
+        }
+    }
+
+    const toggleVisibleCards = (cardType) => {
+        visibleCardType.value = cardType
+    }
 </script>
 
 <style lang="scss" scoped>

@@ -3,7 +3,7 @@
         <div class="management-row">
             <div class="left-side">
                 <h2 class="interface-title">Notes</h2>
-                <button @click="toggleNoteModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
+                <font-awesome-icon icon="fa fa-plus" @click="toggleNoteModal" class="interface-add-btn" />
             </div>
             <div class="right-side">
                 <DropdownComponent :options="subjectOptions" :selected-option="selectedSubject" @closed="toggleNoteModal" @onSelected="setNewSelected"/>
@@ -19,8 +19,8 @@
                 </div>
                 <div class="right-side">
                     <button @click="setReviewNoteData(item)"><font-awesome-icon icon="fa fa-eye"/></button>
-                    <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(i, item.subjectID)" /></button>
-                    <button><font-awesome-icon icon="fa fa-trash" @click="removeNote(item.id)" /></button>
+                    <button class="management-btn"><font-awesome-icon icon="fa fa-pen" @click="extractCardData(i, item.subjectID)" /></button>
+                    <button class="management-btn"><font-awesome-icon icon="fa fa-trash" @click="removeNote(item.id)" /></button>
                 </div>
             </div>
         </div>
