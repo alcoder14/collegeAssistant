@@ -29,7 +29,7 @@
                     <div class="exam-card" v-for="(item) in todayExams" :key="item.id" :style="{borderBottomColor: item.color}">
 
                         <div class="left-side">
-                            <h3 :style="{color: item.color}"> {{ item.date }}</h3>
+                            <h3 :style="{color: item.color}"> {{ transformDate(item.date) }}</h3>
                             <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
                             <h4>{{ item.subjectName }}</h4>
                             <h5>{{ item.description }}</h5>
@@ -55,7 +55,7 @@
                     <div class="exam-card" v-for="(item) in futureExams" :key="item.id" :style="{borderBottomColor: item.color}">
 
                         <div class="left-side">
-                            <h3 :style="{color: item.color}"> {{ item.date }}</h3>
+                            <h3 :style="{color: item.color}"> {{ transformDate(item.date) }}</h3>
                             <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
                             <h4>{{ item.subjectName }}</h4>
                             <h5>{{ item.description }}</h5>
@@ -80,7 +80,7 @@
                     <div class="exam-card" v-for="(item) in pastExams" :key="item.id" :style="{borderBottomColor: item.color}">
 
                         <div class="left-side">
-                            <h3 :style="{color: item.color}"> {{ item.date }}</h3>
+                            <h3 :style="{color: item.color}"> {{ transformDate(item.date) }}</h3>
                             <h4 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.type }}</h4>
                             <h4>{{ item.subjectName }}</h4>
                             <h5>{{ item.description }}</h5>
@@ -130,15 +130,14 @@
 </template>
 
 <script setup>
-    //import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
-    //import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
     import DropdownComponent from '@/components/Elements/DropdownComponent.vue';
     import ExamModal from '@/components/Modals/ExamModal.vue';
+    import { transformDate } from '@/composables/general';
     import { ref, onMounted } from "vue"
-    import { getUserExams, deleteExam } from '@/composables/examQueries';
+    import { getUserTests, deleteTest } from '@/composables/examQueries';
     import { getUserSubjects } from '@/composables/scheduleQueries';
     import { compareDateToToday } from '@/composables/general';
-    import { updateExamResult } from '@/composables/examQueries';
+    import { updateTestResult } from '@/composables/examQueries';
     import { AtomSpinner } from 'epic-spinners';
 
     const examModalVisible = ref(false)
@@ -195,7 +194,7 @@
 
     const exams = ref()
     const loadExams = async () => {
-        exams.value = await getUserExams()
+        exams.value = await getUserTests()
         console.log(exams.value)
     }
 
@@ -231,7 +230,7 @@
         examsData.value = examsData.value.filter((exam) => exam.id !== id)
         filteredExamsData.value = filteredExamsData.value.filter((exam) => exam.id !== id)
         filterByTimeStatus(filteredExamsData.value)
-        await deleteExam(id)
+        await deleteTest(id)
     }
 
     const setNewSelected = (value) => {
@@ -293,7 +292,7 @@
 
         let examToUpdate = examsData.value.find((exam) => exam.id === id)
 
-        await updateExamResult(id, examToUpdate)
+        await updateTestResult(id, examToUpdate)
     }
 
     

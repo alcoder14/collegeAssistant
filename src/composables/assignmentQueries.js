@@ -1,16 +1,12 @@
 import { db, auth } from '@/firebase';
 import { addDoc, collection, query, where, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
-import { transformDate } from './general';
 
-export const addDueAssignment = async (assignmentData) => {
-
-  assignmentData.date = transformDate(assignmentData.date)
-
+export const addAssignment = async (assignmentData) => {
   try {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
 
-    const docRef = await addDoc(collection(db, "dueAssignments"), {
+    const docRef = await addDoc(collection(db, "assignments"), {
       ...assignmentData,
       uid: user.uid,
     });
@@ -24,15 +20,13 @@ export const addDueAssignment = async (assignmentData) => {
 };
 
 
-export const updateDueAssignment = async (id, assignmentData) => {
-  // Transform date (keep consistent)
-  assignmentData.date = transformDate(assignmentData.date);
+export const updateAssignment = async (id, assignmentData) => {
 
   try {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
 
-    const docRef = doc(db, "dueAssignments", id);
+    const docRef = doc(db, "assignments", id);
 
     await updateDoc(docRef, {
       ...assignmentData,
@@ -51,7 +45,7 @@ export const updateAssignmentCompletion = async (id, assignmentData) => {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
 
-    const docRef = doc(db, "dueAssignments", id);
+    const docRef = doc(db, "assignments", id);
 
     await updateDoc(docRef, {
       ...assignmentData,
@@ -71,7 +65,7 @@ export const getUserAssignments = async () => {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
 
-    const assignmentsRef = collection(db, "dueAssignments");
+    const assignmentsRef = collection(db, "assignments");
     const q = query(assignmentsRef, where("uid", "==", user.uid));
 
     const querySnapshot = await getDocs(q);
@@ -89,7 +83,7 @@ export const getUserAssignments = async () => {
 };
 
 
-export const deleteDueAssignment = async (assignmentID) => {
+export const deleteAssignment = async (assignmentID) => {
   const user = auth.currentUser;
 
   if (!user) {
@@ -98,7 +92,7 @@ export const deleteDueAssignment = async (assignmentID) => {
 
   try {
     // --- 1️⃣ Delete the subject itself ---
-    const assignmentRef = doc(db, 'dueAssignments', assignmentID);
+    const assignmentRef = doc(db, 'assignments', assignmentID);
     await deleteDoc(assignmentRef);
 
   } catch (error) {

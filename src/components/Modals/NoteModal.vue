@@ -43,7 +43,6 @@
     import DropdownComponent from '../Elements/DropdownComponent.vue';
     import ErrorMessage from '../ErrorMessage.vue';
     import { getUserSubjects } from '@/composables/scheduleQueries';
-    //import { transformDateBack } from '@/composables/general';
     import { addNote } from '@/composables/noteQueries';
     import { updateNote } from '@/composables/noteQueries';
     import Editor from '@tinymce/tinymce-vue'

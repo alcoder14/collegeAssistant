@@ -14,7 +14,7 @@
             <div class="note-card" v-for="(item, i) in filteredNotesData" :key="item.id" :style="{borderBottomColor: item.color}">
                 <div class="left-side">
                     <h3 :style="{color: item.color}" style="text-transform: capitalize;">{{ item.title }}</h3>
-                    <h4 :style="{color: item.color}">{{ item.date }} at {{ item.time }}</h4>
+                    <h4 :style="{color: item.color}"> {{ transformDate(item.date) }} at {{ item.time }}</h4>
                     <h4 style="margin-bottom: 0;">{{ item.subjectName }}</h4>
                 </div>
                 <div class="right-side">
@@ -48,11 +48,9 @@
 </template>
 
 <script setup>
-    //import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
-    //import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
     import DropdownComponent from '@/components/Elements/DropdownComponent.vue';
     import { ref, onMounted } from "vue"
-
+    import { transformDate } from '@/composables/general';
     import { getUserNotes, deleteNote } from '@/composables/noteQueries';
     import { getUserSubjects } from '@/composables/scheduleQueries';
     import NoteModal from '@/components/Modals/NoteModal.vue';
@@ -102,8 +100,6 @@
     const notes = ref()
     const loadNotes = async () => {
         notes.value = await getUserNotes()
-        console.log("here the notes be:")
-        console.log(notes.value)
     }
 
     const subjectOptions = ref([{

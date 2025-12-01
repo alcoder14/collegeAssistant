@@ -46,7 +46,7 @@
                         <p class="content-subject-text" :style="{backgroundColor: lastNote.color}">{{ lastNote.subjectName }}</p>
                     </div>
                     <h2 class="content-bold">{{ lastNote.title }}</h2>
-                    <h4 class="content-light">{{ lastNote.date }} at {{ lastNote.time }}</h4>
+                    <h4 class="content-light">{{ transformDate(lastNote.date) }} at {{ lastNote.time }}</h4>
                     <div v-html="lastNote.content" v-if="lastNote.content.trim() !== ''" class="content-content"></div>
                 </div>
                 <div class="placeholder" v-else>
@@ -62,7 +62,7 @@
                     <div class="content-subject">
                         <p class="content-subject-text" :style="{backgroundColor: nextAssignment.color}">{{ nextAssignment.subjectName }}</p>
                     </div>
-                    <h2 class="content-bold"> Due: {{ nextAssignment.date }}</h2>
+                    <h2 class="content-bold"> Due: {{ transformDate(nextAssignment.date) }}</h2>
                     <h4 class="content-light">{{ nextAssignment.title }}</h4>
                     <div v-html="nextAssignment.description" v-if="nextAssignment.description.trim() !== ''" class="content-content"></div>
                 </div>
@@ -79,7 +79,7 @@
                     <div class="content-subject">
                         <p class="content-subject-text" :style="{backgroundColor: nextTest.color}">{{ nextTest.subjectName }}</p>
                     </div>
-                    <h2 class="content-bold">{{ nextTest.date }}</h2>
+                    <h2 class="content-bold">{{ transformDate(nextTest.date) }}</h2>
                     <h4 class="content-light">{{ nextTest.type }}</h4>
                 </div>
                 <div class="placeholder" v-else>
@@ -99,13 +99,12 @@
 </template>
 
 <script setup>
-    //import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
-    //import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
     import { getUserSchedule, getUserSubjectPositions, getUserSubjects } from '@/composables/scheduleQueries';
     import { getUserNotes } from '@/composables/noteQueries';
-    import { getUserExams } from '@/composables/examQueries';
+    import { getUserTests } from '@/composables/examQueries';
     import { getUserAssignments } from '@/composables/assignmentQueries';
     import { AtomSpinner } from 'epic-spinners';
+    import { transformDate } from '@/composables/general';
 
     import { onMounted, ref } from 'vue';
     import { compareDateToToday } from '@/composables/general';
@@ -158,10 +157,6 @@
         dayWord.value = days[now.getDay()];
         date.value = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
         dayNumber.value = now.getDay() === 0 ? 6 : now.getDay();
-
-        console.log(dayWord.value)
-        console.log("Day word:" + now.getDay())
-        console.log("Day number: " + dayNumber.value)
     }
 
     const subjectPositions = ref()
@@ -224,10 +219,11 @@
     const notes = ref()
     const lastNote = ref()
     const loadNotes = async () => {
+    
         notes.value = await getUserNotes()
         notes.value = notes.value.sort((a, b) => {
-            const [da, ma, ya] = a.date.split('. ').map(Number);
-            const [db, mb, yb] = b.date.split('. ').map(Number);
+            const [da, ma, ya] = a.date.split('-').map(Number);
+            const [db, mb, yb] = b.date.split('-').map(Number);
 
             const [ha, mina] = a.time.split(':').map(Number);
             const [hb, minb] = b.time.split(':').map(Number);
@@ -262,8 +258,8 @@
         assignments.value = assignments.value.filter((assignment) => assignment.completion === false && compareDateToToday(assignment.date) !== "past")
 
         assignments.value = assignments.value.sort((a, b) => {
-            const [da, ma, ya] = a.date.split('. ').map(Number);
-            const [db, mb, yb] = b.date.split('. ').map(Number);
+            const [da, ma, ya] = a.date.split('-').map(Number);
+            const [db, mb, yb] = b.date.split('-').map(Number);
 
             return new Date(ya, ma - 1, da) - new Date(yb, mb - 1, db);
         });
@@ -285,12 +281,12 @@
     const nextTest = ref()
     const loadTests = async () => {
 
-        tests.value = await getUserExams()
+        tests.value = await getUserTests()
         tests.value = tests.value.filter((test) => compareDateToToday(test.date) !== "past")
 
         tests.value = tests.value.sort((a, b) => {
-            const [da, ma, ya] = a.date.split('. ').map(Number);
-            const [db, mb, yb] = b.date.split('. ').map(Number);
+            const [da, ma, ya] = a.date.split('-').map(Number);
+            const [db, mb, yb] = b.date.split('-').map(Number);
 
             return new Date(ya, ma - 1, da) - new Date(yb, mb - 1, db);
         });

@@ -52,7 +52,7 @@
             </div>
             <div class="right-side"></div>
         </div>
-        <div class="subjects">
+        <div class="subjects" v-if="subjects.length > 0">
             <div v-for="subject in subjects" :key="subject.id" class="subject" :style="{backgroundColor: subject.color}" >
                 <div class="text">
                     <h3> {{ subject.subjectShortName }} </h3>
@@ -63,6 +63,9 @@
                     <font-awesome-icon icon="fa fa-trash trash-icon"/>
                 </div>
             </div>
+        </div>
+        <div class="placeholder" v-else>
+          No Subjects To Show
         </div>
     </div>
 
@@ -80,8 +83,7 @@
 import { ref, onMounted } from 'vue';
 import { getUserSubjects, getUserSubjectPositions, saveSubjectPosition, deleteSubjectPosition, deleteSubjectAndTheirPositions, getUserSchedule, updateScheduleStartHour, updateScheduleName } from '@/composables/scheduleQueries';
 
-//import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
-//import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
+
 import AddSubjectModal from '@/components/Modals/AddSubjectModal.vue';
 import SelectSubjectModal from '@/components/Modals/SelectSubjectModal.vue';
 import DropdownComponent from '@/components/Elements/DropdownComponent.vue';
@@ -375,7 +377,15 @@ const deleteSubject = async (id) => {
   }
 }
 
-
+.placeholder{
+  padding: 1rem;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  min-height: 10vh;
+}
 
 .timetable {
   display: flex;
@@ -415,5 +425,9 @@ const deleteSubject = async (id) => {
   font-weight: bold;
   text-align: center;
   box-sizing: border-box;
+}
+input{
+  font-size: 16px;
+  padding: 5px 8px;
 }
 </style>

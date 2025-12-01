@@ -7,6 +7,9 @@
       <div class="weather-container" v-if="weather != null && !visibleBars">
         <h3 class="weather-data">Temperature: {{ weather.current_weather.temperature }} °C</h3>
       </div>
+      <div class="logout-container">
+        <button class="logout-btn" @click="handleLogout"><font-awesome-icon icon="fa fa-right-from-bracket" /></button>
+      </div>
       <font-awesome-icon icon="fa fa-bars" class="bars toggle-btn" v-if="visibleBars && !visibleMobileNavbar" @click="toggleMobileNavbar" />
       <font-awesome-icon icon="fa fa-xmark" class="xmark toggle-btn" @click="toggleMobileNavbar" v-if="visibleBars && visibleMobileNavbar" />
     </header>
@@ -147,6 +150,24 @@ const visibleMobileNavbar = ref(false)
         font-size: 2rem;
         color: $white;
         cursor: pointer;
+      }
+      .logout-container{
+          width: inherit;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          padding: 1rem;
+          display: flex;
+          justify-content: end;
+        }
+
+        .logout-btn{
+        background-color: transparent;
+        color: $light;
+        font-size: 2rem;
+      }
+      .logout-btn:hover{
+        background-color: $dark;
       }
 
       @media(max-width: 1000px){

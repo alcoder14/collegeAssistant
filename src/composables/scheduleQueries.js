@@ -4,8 +4,6 @@ import { setDoc, doc, addDoc, collection, serverTimestamp, query, where, getDocs
 export const createSchedule = async (uid) => {
     await setDoc(doc(db, 'schedules', uid), {
       uid: uid,
-      breakDuration: 5,
-      lessonDuration: 1,
       maxNumberOfLessons: 14,
       scheduleName: 'schedule1',
       startHour: '07:00',
@@ -156,17 +154,10 @@ export const deleteSubjectAndTheirPositions = async (subjectId) => {
       console.log(`Deleted ${snapshot.size} document(s) from ${collectionName} for subject ${subjectId}`);
     };
 
-    // --- 2️⃣ Delete subjectPositions ---
     await deleteFromCollection('subjectPositions');
-
-    // --- 3️⃣ Delete linked notes ---
     await deleteFromCollection('notes');
-
-    // --- 4️⃣ Delete linked dueAssignments ---
-    await deleteFromCollection('dueAssignments');
-
-    // --- 5️⃣ Delete linked examDates ---
-    await deleteFromCollection('examDates');
+    await deleteFromCollection('assignments');
+    await deleteFromCollection('tests');
 
   } catch (error) {
     console.error('Error deleting subject and related data:', error);

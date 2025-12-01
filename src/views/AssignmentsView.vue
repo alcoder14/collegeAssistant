@@ -30,7 +30,7 @@
                     <div class="assignment-card" v-for="(item) in dueAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
                         <div class="left-side">
                             <h3 :style="{color: item.color}" v-if="compareDateToToday(item.date) === 'today'">Due: Today</h3>
-                            <h3 :style="{color: item.color}" v-else>Due: {{ item.date }}</h3>
+                            <h3 :style="{color: item.color}" v-else>Due: {{ transformDate(item.date) }}</h3>
                             <h4>Task: {{ item.title }}</h4>
                             <h5>Subject: {{ item.subjectName }}</h5>
                             <button class="completion-btn" @click="updateCompletion(item.id, true)">Mark Completed</button>
@@ -53,7 +53,7 @@
                 <div class="inner-box-container">
                     <div class="assignment-card" v-for="(item) in pastDueAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
                         <div class="left-side">
-                            <h3 :style="{color: item.color}">Due: {{ item.date }}</h3>
+                            <h3 :style="{color: item.color}">Due: {{ transformDate(item.date) }}</h3>
                             <h4>Task: {{ item.title }}</h4>
                             <h5>Subject: {{ item.subjectName }}</h5>
                             <button class="completion-btn" @click="updateCompletion(item.id, true)">Mark Completed</button>
@@ -77,7 +77,7 @@
                     <div class="assignment-card" v-for="(item) in completedAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
                         <div class="left-side">
                             <h3 :style="{color: item.color}" v-if="compareDateToToday(item.date) === 'today'">Due: Today</h3>
-                            <h3 :style="{color: item.color}" v-else>Due: {{ item.date }}</h3>
+                            <h3 :style="{color: item.color}" v-else>Due: {{ transformDate(item.date) }}</h3>
                             <h4>Task: {{ item.title }}</h4>
                             <h5>Subject: {{ item.subjectName }}</h5>
                             <button class="completion-btn" @click="updateCompletion(item.id, false)">Unmark Completed</button>
@@ -113,12 +113,10 @@
 </template>
 
 <script setup>
-    //import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
-    //import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
     import DropdownComponent from '@/components/Elements/DropdownComponent.vue';
     import { ref, onMounted } from "vue"
-
-    import { getUserAssignments, deleteDueAssignment, updateAssignmentCompletion } from '@/composables/assignmentQueries';
+    import { transformDate } from '@/composables/general';
+    import { getUserAssignments, deleteAssignment, updateAssignmentCompletion } from '@/composables/assignmentQueries';
     import { getUserSubjects } from '@/composables/scheduleQueries';
     import AssignmentModal from '@/components/Modals/AssignmentModal.vue';
     import { compareDateToToday } from '@/composables/general';
@@ -210,7 +208,7 @@
         assignmentsData.value = assignmentsData.value.filter((assignment) => assignment.id !== id)
         filteredAssignmentsData.value = filteredAssignmentsData.value.filter((assignment) => assignment.id !== id)
         filterByCategory(filteredAssignmentsData.value)
-        await deleteDueAssignment(id)
+        await deleteAssignment(id)
     }
 
     const selectedSubject = ref("all")

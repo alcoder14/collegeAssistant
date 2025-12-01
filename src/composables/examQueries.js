@@ -1,17 +1,13 @@
 import { db, auth } from '@/firebase';
 import { addDoc, collection, query, where, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
-import { transformDate } from './general';
 
-export const addExamDate = async (examData) => {
-
-  console.log("here")
-  examData.date = transformDate(examData.date)
+export const addTest = async (examData) => {
 
   try {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
 
-    const docRef = await addDoc(collection(db, "examDates"), {
+    const docRef = await addDoc(collection(db, "tests"), {
       ...examData,
       uid: user.uid,
     });
@@ -25,15 +21,13 @@ export const addExamDate = async (examData) => {
 };
 
 
-export const updateExamDate = async (id, examData) => {
-  // Transform date (keep consistent)
-  examData.date = transformDate(examData.date);
+export const updateTest = async (id, examData) => {
 
   try {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
 
-    const docRef = doc(db, "examDates", id);
+    const docRef = doc(db, "tests", id);
 
     await updateDoc(docRef, {
       ...examData,
@@ -48,12 +42,12 @@ export const updateExamDate = async (id, examData) => {
 };
 
 
-export const getUserExams = async () => {
+export const getUserTests = async () => {
   try {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
 
-    const examsRef = collection(db, "examDates");
+    const examsRef = collection(db, "tests");
     const q = query(examsRef, where("uid", "==", user.uid));
 
     const querySnapshot = await getDocs(q);
@@ -71,7 +65,7 @@ export const getUserExams = async () => {
 };
 
 
-export const deleteExam = async (examId) => {
+export const deleteTest = async (examId) => {
   const user = auth.currentUser;
 
   if (!user) {
@@ -80,7 +74,7 @@ export const deleteExam = async (examId) => {
 
   try {
     // --- 1️⃣ Delete the subject itself ---
-    const examRef = doc(db, 'examDates', examId);
+    const examRef = doc(db, 'tests', examId);
     await deleteDoc(examRef);
     console.log(`Deleted subject ${examRef}`);
 
@@ -92,13 +86,13 @@ export const deleteExam = async (examId) => {
 };
 
 
-export const updateExamResult = async (id, examData) => {
+export const updateTestResult = async (id, examData) => {
 
   try {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
 
-    const docRef = doc(db, "examDates", id);
+    const docRef = doc(db, "tests", id);
 
     await updateDoc(docRef, {
       ...examData,
