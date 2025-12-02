@@ -1,10 +1,9 @@
 import { db, auth } from '@/firebase';
-import { setDoc, doc, addDoc, collection, serverTimestamp, query, where, getDocs, deleteDoc, updateDoc } from 'firebase/firestore';
+import { setDoc, doc, addDoc, collection, query, where, getDocs, deleteDoc, updateDoc } from 'firebase/firestore';
 
 export const createSchedule = async (uid) => {
     await setDoc(doc(db, 'schedules', uid), {
       uid: uid,
-      maxNumberOfLessons: 14,
       scheduleName: 'schedule1',
       startHour: '07:00',
     });
@@ -18,7 +17,6 @@ export const addSubject = async (subjectData) => {
     const docRef = await addDoc(collection(db, "subjects"), {
       ...subjectData,
       uid: user.uid,
-      createdAt: serverTimestamp(),
     });
 
     return docRef.id;
@@ -88,7 +86,6 @@ export const saveSubjectPosition = async (subjectId, xPosition, yPosition) => {
       subjectID: subjectId,
       xPosition,
       yPosition,
-      createdAt: new Date(),
     });
 
     console.log('Subject position saved with ID:', docRef.id);

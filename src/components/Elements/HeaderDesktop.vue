@@ -7,9 +7,6 @@
       <div class="weather-container" v-if="weather != null && !visibleBars">
         <h3 class="weather-data">Temperature: {{ weather.current_weather.temperature }} °C</h3>
       </div>
-      <div class="logout-container">
-        <button class="logout-btn" @click="handleLogout"><font-awesome-icon icon="fa fa-right-from-bracket" /></button>
-      </div>
       <font-awesome-icon icon="fa fa-bars" class="bars toggle-btn" v-if="visibleBars && !visibleMobileNavbar" @click="toggleMobileNavbar" />
       <font-awesome-icon icon="fa fa-xmark" class="xmark toggle-btn" @click="toggleMobileNavbar" v-if="visibleBars && visibleMobileNavbar" />
     </header>

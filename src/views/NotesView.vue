@@ -18,7 +18,6 @@
                     <h4 style="margin-bottom: 0;">{{ item.subjectName }}</h4>
                 </div>
                 <div class="right-side">
-                    <button @click="setReviewNoteData(item)"><font-awesome-icon icon="fa fa-eye"/></button>
                     <button class="management-btn"><font-awesome-icon icon="fa fa-pen" @click="extractCardData(i, item.subjectID)" /></button>
                     <button class="management-btn"><font-awesome-icon icon="fa fa-trash" @click="removeNote(item.id)" /></button>
                 </div>
@@ -43,8 +42,6 @@
     <!-- Update Mode -->
     <NoteModal @closed="toggleUpdateNoteModal" @listUpdated="prepareData" v-if="updateNoteModalVisible" :noteData="notes[cardNumber]" :extractedSubject="cardSubject" />
 
-    <!-- Review Mode -->
-    <ReviewNote @closed="toggleReviewNote" v-if="reviewNoteModalVisible" :noteData="reviewNoteData" />
 </template>
 
 <script setup>
@@ -54,19 +51,7 @@
     import { getUserNotes, deleteNote } from '@/composables/noteQueries';
     import { getUserSubjects } from '@/composables/scheduleQueries';
     import NoteModal from '@/components/Modals/NoteModal.vue';
-    import ReviewNote from '@/components/Modals/ReviewNote.vue';
     import { AtomSpinner } from 'epic-spinners';
-
-    const reviewNoteData = ref(null)
-    const setReviewNoteData = (item) => {
-        reviewNoteData.value = item
-        toggleReviewNote()
-    }
-
-    const reviewNoteModalVisible = ref(false)
-    const toggleReviewNote = () => {
-        reviewNoteModalVisible.value = !reviewNoteModalVisible.value
-    }
 
     const noteModalVisible = ref(false)
     const toggleNoteModal = () =>{
@@ -138,9 +123,6 @@
                 }
             })
         })
-
-        console.log("BELOW:")
-        console.log(notesData.value)
         filterByType()
     }
 

@@ -5,7 +5,7 @@
             <h2 class="modal-title" v-else>Update Test</h2>
 
             <div class="input-fields" v-if="!loadingData">
-                <input type="date" class="date" v-model="examData.date" style="margin-bottom: 1rem;" >
+                <input type="date" class="date" :min="generateDate()" v-model="examData.date" style="margin-bottom: 1rem;" >
                 <DropdownComponent :selected-option="selectedType" :options="typeOptions" style="margin-bottom: 1rem;" @onSelected="updateExamType" />
                 <DropdownComponent :selected-option="selectedSubject" :options="subjectOptions" v-model="examData.subjectID" @onSelected="updateExamSubjectID" style="margin-bottom: 1rem;" /> 
             </div>
@@ -31,6 +31,7 @@
     import { getUserSubjects } from '@/composables/scheduleQueries';
     import { addTest } from '@/composables/examQueries';
     import { updateTest } from '@/composables/examQueries';
+    import { generateDate } from '@/composables/general';
 
     const typeOptions = ref([
         {
@@ -75,9 +76,6 @@
 
             selectedSubject.value = subjectOptions.value[0].value
             selectedType.value = "exam"
-
-            console.log(props.extractedType)
-
             examData.value.type = "exam"
             examData.value.subjectID = selectedSubject.value
             examData.value.date = null
@@ -87,14 +85,9 @@
 
             selectedSubject.value = props.extractedSubject
             selectedType.value = props.extractedType
-
-            console.log(props.examData.type)
-
-
             examData.value.type = props.examData.type
             examData.value.subjectID = props.examData.subjectID
             examData.value.date = props.examData.date
-            
             cardID.value = props.examData.id
 
         }

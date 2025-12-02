@@ -9,7 +9,7 @@
                 <textarea placeholder="Description (optional)" v-model="assignmentData.description"></textarea>
                 <div class="input-row">
                     <DropdownComponent :selected-option="selectedSubject" :options="subjectOptions" style="margin-bottom: 1rem;" @onSelected="updateAssignmentSubjectID" />
-                    <input type="date" class="date" v-model="assignmentData.date">
+                    <input type="date" class="date" :min="generateDate()" v-model="assignmentData.date">
                 </div>
             </div>
 
@@ -34,6 +34,7 @@
     import { getUserSubjects } from '@/composables/scheduleQueries';
     import { addAssignment } from '@/composables/assignmentQueries';
     import { updateAssignment } from '@/composables/assignmentQueries';
+    import { generateDate } from '@/composables/general';
 
     const props = defineProps(["assignmentData", "extractedSubject"])
     const emit = defineEmits(['closed', 'listUpdated']);

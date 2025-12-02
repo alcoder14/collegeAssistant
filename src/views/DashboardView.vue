@@ -112,9 +112,9 @@
     const loading = ref(true)
 
     onMounted( async () => {
-        getTime() // get current time
-        getToday() // get current day - numeric and string values
-        getScheduleData() // get starting time for user's schedule
+        getTime()
+        getToday() 
+        getScheduleData() 
         
         await getTodaysPositions()
 

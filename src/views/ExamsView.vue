@@ -291,6 +291,12 @@
         })
 
         let examToUpdate = examsData.value.find((exam) => exam.id === id)
+        examToUpdate = {
+            ...examToUpdate
+        }
+        delete examToUpdate.timeStatus
+        delete examToUpdate.color
+        delete examToUpdate.subjectName
 
         await updateTestResult(id, examToUpdate)
     }

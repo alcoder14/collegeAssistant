@@ -430,4 +430,34 @@ input{
   font-size: 16px;
   padding: 5px 8px;
 }
+
+@media(max-width: 1340px){
+  .subjects-container {
+    .subjects{
+      row-gap: 15px;
+      grid-template-columns: repeat(5, 19%);
+    }
+  }
+}
+@media(max-width: 1160px){
+  .subjects-container {
+    .subjects{
+      grid-template-columns: repeat(4, 24%);
+    }
+  }
+}
+@media(max-width: 900px){
+  .subjects-container {
+    .subjects{
+      grid-template-columns: repeat(3, 32%);
+    }
+  }
+}
+@media(max-width: 700px){
+  .subjects-container {
+    .subjects{
+      grid-template-columns: repeat(2, 49%);
+    }
+  }
+}
 </style>

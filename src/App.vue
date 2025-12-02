@@ -2,7 +2,9 @@
 
     <HeaderDesktop v-if="showNavbarAndHeader" /> 
     <div class="container" v-if="showNavbarAndHeader">
-      <DesktopNavbar selected="Dashboard" v-if="visibleNavbar === 'desktop'" />
+      <div class="nav-container" v-if="visibleNavbar === 'desktop'">
+        <NavbarComponent />
+      </div>
       <main class="content">
           <router-view />
       </main>
@@ -13,7 +15,7 @@
 
 <script setup>
   import HeaderDesktop from './components/Elements/HeaderDesktop.vue';
-  import DesktopNavbar from './components/Elements/DesktopNavbar.vue';
+  import NavbarComponent from './components/Elements/NavbarComponent.vue';
   import { computed, ref, onMounted } from 'vue';
   import { useRoute } from 'vue-router';
 
@@ -51,6 +53,12 @@
       display: flex;
       flex-direction: row;
   }
+  .nav-container{
+        min-height: 90vh;
+        background-color: $darkest;
+        width: 15%;
+        border-right: 2px solid #565656;
+      }
   .content{
       background-color: $dark;
       width: 85%;
