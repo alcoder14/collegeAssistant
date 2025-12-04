@@ -9,7 +9,7 @@
                 <textarea placeholder="Description (optional)" v-model="assignmentData.description"></textarea>
                 <div class="input-row">
                     <DropdownComponent :selected-option="selectedSubject" :options="subjectOptions" style="margin-bottom: 1rem;" @onSelected="updateAssignmentSubjectID" />
-                    <input type="date" class="date" v-model="assignmentData.date">
+                    <input type="date" class="date" :min="generateDate()" v-model="assignmentData.date">
                 </div>
             </div>
 
@@ -32,9 +32,9 @@
     import DropdownComponent from '../Elements/DropdownComponent.vue';
     import ErrorMessage from '../ErrorMessage.vue';
     import { getUserSubjects } from '@/composables/scheduleQueries';
-    import { transformDateBack } from '@/composables/general';
-    import { addDueAssignment } from '@/composables/assignmentQueries';
-    import { updateDueAssignment } from '@/composables/assignmentQueries';
+    import { addAssignment } from '@/composables/assignmentQueries';
+    import { updateAssignment } from '@/composables/assignmentQueries';
+    import { generateDate } from '@/composables/general';
 
     const props = defineProps(["assignmentData", "extractedSubject"])
     const emit = defineEmits(['closed', 'listUpdated']);
@@ -82,7 +82,7 @@
             assignmentData.value.description = props.assignmentData.description
             assignmentData.value.title = props.assignmentData.title
             assignmentData.value.subjectID = props.assignmentData.subjectID
-            assignmentData.value.date = transformDateBack(props.assignmentData.date)
+            assignmentData.value.date = props.assignmentData.date
             assignmentData.value.completion = props.assignmentData.completion
             
             cardID.value = props.assignmentData.id
@@ -120,7 +120,7 @@
         } 
     
         try {
-            await addDueAssignment(assignmentData.value);
+            await addAssignment(assignmentData.value);
             emit("closed");
             emit("listUpdated")
         } catch (error) {
@@ -138,7 +138,7 @@
     
         try {
             console.log(assignmentData.value)
-            await updateDueAssignment(cardID.value, assignmentData.value);
+            await updateAssignment(cardID.value, assignmentData.value);
             emit("closed");
             emit("listUpdated")
         } catch (error) {

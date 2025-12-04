@@ -1,112 +1,108 @@
 <template>
-    <HeaderDesktop />
-    <div class="flex-container">
-        <DesktopNavbar :selected="'AssignmentsView'" />
+    <div class="assignments-interface interface">
+        <div class="management-row">
+            <div class="left-side">
+                <h2 class="interface-title">Assignments</h2>
+                <font-awesome-icon icon="fa fa-plus" @click="toggleAssignmentModal" class="interface-add-btn" />
 
-        <main class="view-blank">
-            <div class="view-container">
+            </div>
+            <div class="right-side">
+                <DropdownComponent :options="subjectOptions" :selected-option="selectedSubject" @closed="toggleAssignmentModal" @onSelected="setNewSelected"/>
+            </div>
+        </div>
 
-                <div class="assignments-interface interface">
-                    <div class="management-row">
+        <div class="mobile-navigator" v-if="mobileNavigatorVisible">
+            <button @click="toggleVisibleCards('due')" :class="{'selected-btn': visibleCardType === 'due'}">Due</button>
+            <button @click="toggleVisibleCards('past-due')" :class="{'selected-btn': visibleCardType === 'past-due'}">Past Due</button>
+            <button @click="toggleVisibleCards('completed')" :class="{'selected-btn': visibleCardType === 'completed'}">Completed</button>
+        </div>
+
+        <div class="outer-container" v-if="assignmentsData.length > 0">
+
+            <div class="inner-container" v-if="dueAssignments.length > 0 && (visibleCardType === 'due' || visibleCardType === 'all')">
+
+                <div class="top-row">
+                    <h1>Due</h1>
+                    <div class="line"></div>
+                </div>
+
+                <div class="inner-box-container">
+                    <div class="assignment-card" v-for="(item) in dueAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
                         <div class="left-side">
-                            <h2 class="interface-title">Assignments</h2>
-                            <button @click="toggleAssignmentModal"><font-awesome-icon icon="fa fa-plus" /> New</button>
+                            <h3 :style="{color: item.color}" v-if="compareDateToToday(item.date) === 'today'">Due: Today</h3>
+                            <h3 :style="{color: item.color}" v-else>Due: {{ transformDate(item.date) }}</h3>
+                            <h4>Task: {{ item.title }}</h4>
+                            <h5>Subject: {{ item.subjectName }}</h5>
+                            <button class="completion-btn" @click="updateCompletion(item.id, true)">Mark Completed</button>
                         </div>
                         <div class="right-side">
-                            <DropdownComponent :options="subjectOptions" :selected-option="selectedSubject" @closed="toggleAssignmentModal" @onSelected="setNewSelected"/>
+                            <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID)" /></button>
+                            <button><font-awesome-icon icon="fa fa-trash" @click="removeAssignment(item.id)" /></button>
                         </div>
                     </div>
-
-                    <div class="outer-container" v-if="assignmentsData.length > 0">
-
-                        <div class="inner-container" v-if="dueAssignments.length > 0">
-
-                            <div class="top-row">
-                                <h1>Due</h1>
-                                <div class="line"></div>
-                            </div>
-
-                            <div class="inner-box-container">
-                                <div class="assignment-card" v-for="(item) in dueAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
-                                    <div class="left-side">
-                                        <h3 :style="{color: item.color}" v-if="compareDateToToday(item.date) === 'today'">Due: Today</h3>
-                                        <h3 :style="{color: item.color}" v-else>Due: {{ item.date }}</h3>
-                                        <h4>Task: {{ item.title }}</h4>
-                                        <h5>Subject: {{ item.subjectName }}</h5>
-                                        <button class="completion-btn" @click="updateCompletion(item.id, true)">Mark Completed</button>
-                                    </div>
-                                    <div class="right-side">
-                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID)" /></button>
-                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeAssignment(item.id)" /></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="inner-container" v-if="pastDueAssignments.length > 0">
-
-                            <div class="top-row">
-                                <h1><font-awesome-icon icon="fa fa-exclamation-circle" /> Past Due</h1>
-                                <div class="line"></div>
-                            </div>
-
-                            <div class="inner-box-container">
-                                <div class="assignment-card" v-for="(item) in pastDueAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
-                                    <div class="left-side">
-                                        <h3 :style="{color: item.color}">Due: {{ item.date }}</h3>
-                                        <h4>Task: {{ item.title }}</h4>
-                                        <h5>Subject: {{ item.subjectName }}</h5>
-                                        <button class="completion-btn" @click="updateCompletion(item.id, true)">Mark Completed</button>
-                                    </div>
-                                    <div class="right-side">
-                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID)" /></button>
-                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeAssignment(item.id)" /></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="inner-container" v-if="completedAssignments.length > 0">
-
-                            <div class="top-row">
-                                <h1><font-awesome-icon icon="fa fa-check" /> Completed</h1>
-                                <div class="line"></div>
-                            </div>
-
-                            <div class="inner-box-container">
-                                <div class="assignment-card" v-for="(item) in completedAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
-                                    <div class="left-side">
-                                        <h3 :style="{color: item.color}" v-if="compareDateToToday(item.date) === 'today'">Due: Today</h3>
-                                        <h3 :style="{color: item.color}" v-else>Due: {{ item.date }}</h3>
-                                        <h4>Task: {{ item.title }}</h4>
-                                        <h5>Subject: {{ item.subjectName }}</h5>
-                                        <button class="completion-btn" @click="updateCompletion(item.id, false)">Unmark Completed</button>
-                                    </div>
-                                    <div class="right-side">
-                                        <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID)" /></button>
-                                        <button><font-awesome-icon icon="fa fa-trash" @click="removeAssignment(item.id)" /></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="placeholder" v-if="pastDueAssignments.length == 0 && dueAssignments.length == 0 && completedAssignments.length === 0 && !loadingData">
-                        No Assignments To Show
-                    </div>
-
-                    <div class="loader" v-if="loadingData">
-                        <atom-spinner :animation-duration="1000" :size="100" color="#55DFD4"/>
-                        <p style="margin-top: 1rem">Loading</p>
-                    </div>
-
                 </div>
-        
             </div>
-        </main>
+
+            <div class="inner-container" v-if="pastDueAssignments.length > 0 && (visibleCardType === 'past-due' || visibleCardType === 'all')">
+
+                <div class="top-row">
+                    <h1><font-awesome-icon icon="fa fa-exclamation-circle" /> Past Due</h1>
+                    <div class="line"></div>
+                </div>
+
+                <div class="inner-box-container">
+                    <div class="assignment-card" v-for="(item) in pastDueAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
+                        <div class="left-side">
+                            <h3 :style="{color: item.color}">Due: {{ transformDate(item.date) }}</h3>
+                            <h4>Task: {{ item.title }}</h4>
+                            <h5>Subject: {{ item.subjectName }}</h5>
+                            <button class="completion-btn" @click="updateCompletion(item.id, true)">Mark Completed</button>
+                        </div>
+                        <div class="right-side">
+                            <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID)" /></button>
+                            <button><font-awesome-icon icon="fa fa-trash" @click="removeAssignment(item.id)" /></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inner-container" v-if="completedAssignments.length > 0 && (visibleCardType === 'completed' || visibleCardType === 'all')">
+
+                <div class="top-row">
+                    <h1><font-awesome-icon icon="fa fa-check" /> Completed</h1>
+                    <div class="line"></div>
+                </div>
+
+                <div class="inner-box-container">
+                    <div class="assignment-card" v-for="(item) in completedAssignments" :key="item.id" :style="{borderBottomColor: item.color}">
+                        <div class="left-side">
+                            <h3 :style="{color: item.color}" v-if="compareDateToToday(item.date) === 'today'">Due: Today</h3>
+                            <h3 :style="{color: item.color}" v-else>Due: {{ transformDate(item.date) }}</h3>
+                            <h4>Task: {{ item.title }}</h4>
+                            <h5>Subject: {{ item.subjectName }}</h5>
+                            <button class="completion-btn" @click="updateCompletion(item.id, false)">Unmark Completed</button>
+                        </div>
+                        <div class="right-side">
+                            <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID)" /></button>
+                            <button><font-awesome-icon icon="fa fa-trash" @click="removeAssignment(item.id)" /></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="placeholder" v-if="pastDueAssignments.length == 0 && dueAssignments.length == 0 && completedAssignments.length === 0 && !loadingData">
+            No Assignments To Show
+        </div>
+
+        <div class="loader" v-if="loadingData">
+            <atom-spinner :animation-duration="1000" :size="100" color="#55DFD4"/>
+            <p style="margin-top: 1rem">Loading</p>
+        </div>
 
     </div>
+        
 
     <!-- Add Mode -->
     <AssignmentModal @closed="toggleAssignmentModal" @listUpdated="prepareData" v-if="assignmentModalVisible" :assignmentData="null"/>
@@ -117,12 +113,10 @@
 </template>
 
 <script setup>
-    import HeaderDesktop from '@/components/Elements/HeaderDesktop.vue';
-    import DesktopNavbar from '@/components/Elements/DesktopNavbar.vue';
     import DropdownComponent from '@/components/Elements/DropdownComponent.vue';
     import { ref, onMounted } from "vue"
-
-    import { getUserAssignments, deleteDueAssignment, updateAssignmentCompletion } from '@/composables/assignmentQueries';
+    import { transformDate } from '@/composables/general';
+    import { getUserAssignments, deleteAssignment, updateAssignmentCompletion } from '@/composables/assignmentQueries';
     import { getUserSubjects } from '@/composables/scheduleQueries';
     import AssignmentModal from '@/components/Modals/AssignmentModal.vue';
     import { compareDateToToday } from '@/composables/general';
@@ -149,6 +143,9 @@
     }
 
     onMounted( () => {
+        checkWidth()
+        window.addEventListener("resize", checkWidth)
+
         prepareData()
     })
 
@@ -211,7 +208,7 @@
         assignmentsData.value = assignmentsData.value.filter((assignment) => assignment.id !== id)
         filteredAssignmentsData.value = filteredAssignmentsData.value.filter((assignment) => assignment.id !== id)
         filterByCategory(filteredAssignmentsData.value)
-        await deleteDueAssignment(id)
+        await deleteAssignment(id)
     }
 
     const selectedSubject = ref("all")
@@ -268,11 +265,42 @@
 
         filterByCategory(filteredAssignmentsData.value)
 
+<<<<<<< HEAD
         let assignmentToUpdate = {
             ...assignmentsData.value.find((assignment) => assignment.id === id)
         }
+=======
+        let assignmentToUpdate = assignmentsData.value.find((assignment) => assignment.id === id)
+        assignmentToUpdate = {
+            ...assignmentToUpdate
+        }
+
+        delete assignmentToUpdate.timeStatus
+        delete assignmentToUpdate.color
+        delete assignmentToUpdate.subjectName
+>>>>>>> 9e2c420d249b12b9c0d8f9fbffb3d9ed9124af36
 
         await updateAssignmentCompletion(id, assignmentToUpdate)
+    }
+
+
+    const mobileNavigatorVisible = ref(false)
+    const visibleCardType = ref(null)
+
+    const checkWidth = () => {
+        if(window.innerWidth < 665){
+        mobileNavigatorVisible.value = true
+        if(visibleCardType.value === null || visibleCardType.value === "all"){
+            visibleCardType.value = "due"
+        }
+        } else {
+            mobileNavigatorVisible.value = false
+            visibleCardType.value = "all"
+        }
+    }
+
+    const toggleVisibleCards = (cardType) => {
+        visibleCardType.value = cardType
     }
 
 </script>

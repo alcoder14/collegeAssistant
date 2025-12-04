@@ -14,7 +14,7 @@
           ></span>
           {{ subject.subjectName }}
         </li>
-        <li @click="handleSelectNone" class="none-option">None</li>
+        <li @click="handleSelectNone" class="none-option">No Lecture</li>
       </ul>
     </div>
   </div>
@@ -65,8 +65,6 @@ const handleSelectNone = () => emit('select-none');
   border-radius: 50%;
 }
 .none-option {
-  color: red;
-  text-align: center;
   font-weight: bold;
 }
 .close-btn {

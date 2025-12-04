@@ -26,8 +26,8 @@ button{
     border: none;
     outline: none;
     cursor: pointer;
-    padding: 7px 11px;
-    font-size: 20px;
+    font-size: 16px;
+    padding: 5px 8px;
     transition: all 0.3s;
 }
 .transparent-btn{
@@ -35,12 +35,6 @@ button{
     color: $light;
     font-size: 1rem;
     padding: 0;
-}
-@media(max-height: 1000px){
-    button{
-        font-size: 16px;
-        padding: 5px 8px;
-    }
 }
 
 
@@ -66,6 +60,20 @@ button{
     .spinner-text{
         margin-top: 1rem;
         color: white;
+    }
+}
+
+.spinner-btn{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 7px 11px;
+    width: 100%;
+    font-size: 20px;
+    background-color: $light;
+    p{
+        margin-left: 1rem;
     }
 }
 
@@ -103,7 +111,6 @@ button{
     .modal-container .modal-window{
         width: 100%;
         min-width: 100%;
-        min-height: 100vh;
     }
 }
 .modal-title{
@@ -196,7 +203,7 @@ button{
             flex-direction: row;
             justify-content: end;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             color: $white;
             .text{
                 margin-right: 0.5rem;
@@ -275,6 +282,9 @@ button{
         .slogan-container > .check-option{
             font-size: 1.3rem;
         }
+        .slogan-container img{
+            height: 10vh;
+        }
     }
 }
 @media(max-width: 500px){
@@ -292,6 +302,23 @@ button{
     }
     }
 }
+@media(max-width: 400px){
+    .form-page{
+        flex-direction: column;
+        .slogan-container h1 {
+            font-size: 2.1rem;
+        }
+        .slogan-container h3 {
+            font-size: 1.1rem;
+        }
+        .slogan-container > .check-option{
+            font-size: 1rem;
+        }
+        .slogan-container img{
+            height: 80px;
+        }
+    }
+}
 
 // ERROR MESSAGE
 .error-message {
@@ -302,25 +329,15 @@ button{
   }
 
 
-
-  // View Container - used on each page that can be accessed through navbar
-
-.flex-container{
-    display: flex;
-    flex-direction: row;
-}
-.view-blank{
-    background-color: $dark;
-    width: 85%;
-    min-height: 90vh;
-}
-.view-container{
-    padding: 2rem;
-}
-
 /* Schedule, Notes, Assignments, Tests, Subjects */
 .interface-title{
-    margin-right: 1rem;
+    margin-right: 0.2rem;
+}
+.interface-add-btn{
+    padding: 0.4rem;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: $light;
 }
 
 .interface{
@@ -338,11 +355,27 @@ button{
         margin: 1rem;
         margin-top: 0;
         display: grid;
-        grid-template-columns: repeat(5, 19%);
+        grid-template-columns: repeat(4, 24%);
         justify-content: space-between;
     }
 
     /* Assignments, Tests */
+
+    .mobile-navigator{
+        padding: 0 1rem;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 33.33%);
+        button{
+            background-color: $dark;
+            color: $light;
+            font-size: 0.9rem;
+        }
+        .selected-btn{
+            background-color: $light;
+            color: $darkest;
+        }
+    }
 
     .outer-container{
             display: flex;
@@ -366,7 +399,7 @@ button{
                 .inner-box-container{
                         margin-top: 1rem;
                         display: grid;
-                        grid-template-columns: repeat(5, 19%);
+                        grid-template-columns: repeat(4, 24%);
                         justify-content: space-between;
                 }
             }
@@ -386,6 +419,52 @@ button{
     }
 }
 
+@media(max-width: 1280px){
+    .interface{
+        .notes-container{
+            grid-template-columns: repeat(3, 32%);
+        }
+        .outer-container{
+            .inner-container{
+                .inner-box-container{
+                    grid-template-columns: repeat(3, 32%);
+                }
+            }
+        }
+    }
+}
+@media(max-width: 1000px){
+    .interface{
+        .notes-container{
+            grid-template-columns: repeat(2, 49%);
+        }
+        .outer-container{
+            .inner-container{
+                .inner-box-container{
+                    grid-template-columns: repeat(2, 49%);
+                }
+            }
+        }
+    }
+}
+@media(max-width: 665px){
+    .interface{
+        .notes-container{
+            grid-template-columns: repeat(1, 100%);
+        }
+        .outer-container{
+            .inner-container{
+                .top-row{
+                    display: none;
+                }
+                .inner-box-container{
+                    grid-template-columns: repeat(1, 100%);
+                }
+            }
+        }
+    }
+}
+
 /* Notes, Assignments, Tests, Schedule */
 
 .management-row{
@@ -396,6 +475,7 @@ button{
   .left-side, .right-side{
       display: flex;
       flex-direction: row;
+      align-items: center;
   }
   .right-side{
       align-items: center;
@@ -403,4 +483,9 @@ button{
         margin-right: 10px;
       }
   }
+}
+
+.right-side > button{
+    background-color: transparent;
+    color: $light;
 }

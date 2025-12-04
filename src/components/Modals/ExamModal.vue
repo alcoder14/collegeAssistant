@@ -1,16 +1,16 @@
 <template>
     <main class="modal-container"  @click="closeModal($event)">
-        <form class="modal-window" @submit.prevent="handleConfirm" style="width: 600px">
+        <form class="modal-window exam-window" @submit.prevent="handleConfirm">
             <h2 class="modal-title" v-if="props.examData === null">New Test</h2>
             <h2 class="modal-title" v-else>Update Test</h2>
 
             <div class="input-fields" v-if="!loadingData">
-                <input type="date" class="date" v-model="examData.date" style="margin-bottom: 1rem;" >
+                <input type="date" class="date" :min="generateDate()" v-model="examData.date" style="margin-bottom: 1rem;" >
                 <DropdownComponent :selected-option="selectedType" :options="typeOptions" style="margin-bottom: 1rem;" @onSelected="updateExamType" />
                 <DropdownComponent :selected-option="selectedSubject" :options="subjectOptions" v-model="examData.subjectID" @onSelected="updateExamSubjectID" style="margin-bottom: 1rem;" /> 
             </div>
 
-            <ErrorMessage v-if="errMessage !== ''" :error-msg="errMessage" />
+            <ErrorMessage v-if="errMessage !== ''" :error-msg="errMessage" style="margin-bottom: 1rem;" />
 
             <button class="light-purple-btn" type="submit" v-if="!loadingData && props.examData === null">Add</button>
 
@@ -29,9 +29,9 @@
     import DropdownComponent from '../Elements/DropdownComponent.vue';
     import ErrorMessage from '../ErrorMessage.vue';
     import { getUserSubjects } from '@/composables/scheduleQueries';
-    import { addExamDate } from '@/composables/examQueries';
-    import { transformDateBack } from '@/composables/general';
-    import { updateExamDate } from '@/composables/examQueries';
+    import { addTest } from '@/composables/examQueries';
+    import { updateTest } from '@/composables/examQueries';
+    import { generateDate } from '@/composables/general';
 
     const typeOptions = ref([
         {
@@ -76,9 +76,6 @@
 
             selectedSubject.value = subjectOptions.value[0].value
             selectedType.value = "exam"
-
-            console.log(props.extractedType)
-
             examData.value.type = "exam"
             examData.value.subjectID = selectedSubject.value
             examData.value.date = null
@@ -88,14 +85,9 @@
 
             selectedSubject.value = props.extractedSubject
             selectedType.value = props.extractedType
-
-            console.log(props.examData.type)
-
-
             examData.value.type = props.examData.type
             examData.value.subjectID = props.examData.subjectID
-            examData.value.date = transformDateBack(props.examData.date)
-            
+            examData.value.date = props.examData.date
             cardID.value = props.examData.id
 
         }
@@ -133,7 +125,7 @@
         }
     
         try {
-            await addExamDate(examData.value);
+            await addTest(examData.value);
             emit("closed");
             emit("listUpdated")
         } catch (error) {
@@ -151,7 +143,7 @@
     
         try {
             console.log(examData.value)
-            await updateExamDate(cardID.value, examData.value);
+            await updateTest(cardID.value, examData.value);
             emit("closed");
             emit("listUpdated")
         } catch (error) {
@@ -165,9 +157,14 @@
 
 <style lang="scss" scoped>
       @import "@/assets/style.scss";
+      @media(max-width: 601px){
+        .exam-window{
+            width: 100%;
+        }
+      }
       .input-fields{
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: space-between;
       }
       .input-column, textarea{
