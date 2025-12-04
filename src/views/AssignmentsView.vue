@@ -268,7 +268,9 @@
 
         filterByCategory(filteredAssignmentsData.value)
 
-        let assignmentToUpdate = assignmentsData.value.find((assignment) => assignment.id === id)
+        let assignmentToUpdate = {
+            ...assignmentsData.value.find((assignment) => assignment.id === id)
+        }
 
         await updateAssignmentCompletion(id, assignmentToUpdate)
     }

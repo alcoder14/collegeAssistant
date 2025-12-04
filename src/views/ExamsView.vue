@@ -293,7 +293,9 @@
             }
         })
 
-        let examToUpdate = examsData.value.find((exam) => exam.id === id)
+        let examToUpdate = {
+            ...examsData.value.find((exam) => exam.id === id)
+        }
 
         await updateExamResult(id, examToUpdate)
     }
