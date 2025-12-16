@@ -99,7 +99,6 @@
                         </div>
 
                         <div class="right-side">
-                            <button><font-awesome-icon icon="fa fa-pen" @click="extractCardData(item.id, item.subjectID, item.type)" /></button>
                             <button><font-awesome-icon icon="fa fa-trash" @click="removeExam(item.id)" /></button>
                         </div>
 
@@ -201,7 +200,6 @@
     const subjects = ref()
     const loadSubjects = async () => {
         subjects.value = await getUserSubjects()
-        console.log(subjects.value)
     }
 
     const examsData = ref([])
@@ -290,11 +288,6 @@
             }
         })
 
-<<<<<<< HEAD
-        let examToUpdate = {
-            ...examsData.value.find((exam) => exam.id === id)
-        }
-=======
         let examToUpdate = examsData.value.find((exam) => exam.id === id)
         examToUpdate = {
             ...examToUpdate
@@ -302,7 +295,7 @@
         delete examToUpdate.timeStatus
         delete examToUpdate.color
         delete examToUpdate.subjectName
->>>>>>> 9e2c420d249b12b9c0d8f9fbffb3d9ed9124af36
+        delete examToUpdate.id
 
         await updateTestResult(id, examToUpdate)
     }

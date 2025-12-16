@@ -48,7 +48,7 @@ export const getUserTests = async () => {
     if (!user) throw new Error("User not authenticated");
 
     const examsRef = collection(db, "tests");
-    const q = query(examsRef, where("uid", "==", user.uid));
+    const q = query(examsRef, where("uid", "==", user.uid))
 
     const querySnapshot = await getDocs(q);
 

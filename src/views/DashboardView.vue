@@ -156,7 +156,7 @@
 
         dayWord.value = days[now.getDay()];
         date.value = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-        dayNumber.value = now.getDay() === 0 ? 6 : now.getDay();
+        dayNumber.value = now.getDay() === 0 ? 6 : now.getDay() - 1;
     }
 
     const subjectPositions = ref()

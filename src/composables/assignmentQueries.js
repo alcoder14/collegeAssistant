@@ -40,24 +40,7 @@ export const updateAssignment = async (id, assignmentData) => {
   }
 };
 
-export const updateAssignmentCompletion = async (id, assignmentData) => {
-  try {
-    const user = auth.currentUser;
-    if (!user) throw new Error("User not authenticated");
 
-    const docRef = doc(db, "assignments", id);
-
-    await updateDoc(docRef, {
-      ...assignmentData,
-      uid: user.uid,
-    });
-
-    return id;
-  } catch (error) {
-    console.log(error)
-    throw error;
-  }
-};
 
 
 export const getUserAssignments = async () => {

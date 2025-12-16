@@ -116,7 +116,7 @@
     import DropdownComponent from '@/components/Elements/DropdownComponent.vue';
     import { ref, onMounted } from "vue"
     import { transformDate } from '@/composables/general';
-    import { getUserAssignments, deleteAssignment, updateAssignmentCompletion } from '@/composables/assignmentQueries';
+    import { getUserAssignments, deleteAssignment, updateAssignment } from '@/composables/assignmentQueries';
     import { getUserSubjects } from '@/composables/scheduleQueries';
     import AssignmentModal from '@/components/Modals/AssignmentModal.vue';
     import { compareDateToToday } from '@/composables/general';
@@ -265,11 +265,6 @@
 
         filterByCategory(filteredAssignmentsData.value)
 
-<<<<<<< HEAD
-        let assignmentToUpdate = {
-            ...assignmentsData.value.find((assignment) => assignment.id === id)
-        }
-=======
         let assignmentToUpdate = assignmentsData.value.find((assignment) => assignment.id === id)
         assignmentToUpdate = {
             ...assignmentToUpdate
@@ -278,9 +273,9 @@
         delete assignmentToUpdate.timeStatus
         delete assignmentToUpdate.color
         delete assignmentToUpdate.subjectName
->>>>>>> 9e2c420d249b12b9c0d8f9fbffb3d9ed9124af36
+        delete assignmentToUpdate.id
 
-        await updateAssignmentCompletion(id, assignmentToUpdate)
+        await updateAssignment(id, assignmentToUpdate)
     }
 
 

@@ -33,7 +33,7 @@
   let visibleNavbar = ref(null)
 
   const checkWidth = () => {
-    if(window.innerWidth > 1650){
+    if(window.innerWidth > 1450){
       visibleNavbar.value = "desktop"
     } else {
       visibleNavbar.value = "mobile"
@@ -66,7 +66,7 @@
       padding: 2rem;
   }
 
-  @media(max-width: 1651px){
+  @media(max-width: 1451px){
     .content{
         width: 100%;
     }

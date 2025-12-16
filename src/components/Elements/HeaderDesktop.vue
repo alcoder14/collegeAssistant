@@ -65,7 +65,7 @@ let visibleBars = ref(null)
 const visibleMobileNavbar = ref(false)
 
   const checkWidth = () => {
-    if(window.innerWidth > 1650){
+    if(window.innerWidth > 1450){
       visibleBars.value = false
       visibleMobileNavbar.value = false
     } else {
