@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { signOut, deleteUser } from 'firebase/auth';
+import { signOut, } from 'firebase/auth';
 import { auth } from '@/firebase';
 import { useRouter } from 'vue-router';
 import { ref, onMounted, watch } from 'vue';
